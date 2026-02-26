@@ -1,0 +1,31 @@
+{
+  "name": "FI5699 Dissertation Module",
+  "image": "ghcr.io/christian-engels/fi5699:latest",
+  "postCreateCommand": "uv init --no-readme 2>/dev/null; uv add polars plotnine pyfixest diff-diff xlsxwriter tidyfinance pyarrow marginaleffects",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.black-formatter",
+        "ms-toolsai.jupyter",
+        "esbenp.prettier-vscode",
+        "GitHub.copilot-chat",
+        "GrapeCity.gc-excelviewer",
+        "emeraldwalk.runonsave",
+        "jcdj666.uv-run"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+        "python.terminal.activateEnvironment": true,
+        "emeraldwalk.runonsave": {
+          "commands": [
+            {
+              "match": ".*",
+              "cmd": "python3 ${workspaceFolder}/.utilities/save-files.py"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

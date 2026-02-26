@@ -1,0 +1,100 @@
+% beamerthemeFixedEffects.sty
+% A clean, professional Beamer theme for teaching econometrics.
+% Designed for clarity and minimal cognitive load.
+
+\ProvidesPackage{beamerthemeFixedEffects}
+
+% ── Fonts ──────────────────────────────────────────────────────────────────────
+\RequirePackage[T1]{fontenc}
+\RequirePackage{lmodern}
+\RequirePackage{microtype}
+
+% ── Colours ────────────────────────────────────────────────────────────────────
+\definecolor{DarkNavy}{HTML}{1B4F72}
+\definecolor{Accent}{HTML}{C0392B}
+\definecolor{LightGrey}{HTML}{F2F3F4}
+\definecolor{MedGrey}{HTML}{ABB2B9}
+\definecolor{TextGrey}{HTML}{2C3E50}
+\definecolor{CodeBg}{HTML}{F8F9FA}
+
+\setbeamercolor{normal text}{fg=TextGrey}
+\setbeamercolor{structure}{fg=DarkNavy}
+\setbeamercolor{frametitle}{fg=white, bg=DarkNavy}
+\setbeamercolor{title}{fg=white}
+\setbeamercolor{subtitle}{fg=MedGrey}
+\setbeamercolor{author}{fg=white}
+\setbeamercolor{date}{fg=MedGrey}
+\setbeamercolor{institute}{fg=MedGrey}
+\setbeamercolor{block title}{fg=white, bg=DarkNavy}
+\setbeamercolor{block body}{bg=LightGrey}
+\setbeamercolor{block title alerted}{fg=white, bg=Accent}
+\setbeamercolor{block body alerted}{bg=LightGrey}
+\setbeamercolor{alerted text}{fg=Accent}
+\setbeamercolor{item}{fg=DarkNavy}
+\setbeamercolor{footline}{fg=MedGrey, bg=white}
+\setbeamercolor{page number in head/foot}{fg=MedGrey}
+
+% ── Fonts ──────────────────────────────────────────────────────────────────────
+\setbeamerfont{title}{size=\Large, series=\bfseries}
+\setbeamerfont{subtitle}{size=\normalsize}
+\setbeamerfont{frametitle}{size=\large, series=\bfseries}
+\setbeamerfont{framesubtitle}{size=\small}
+\setbeamerfont{block title}{size=\normalsize, series=\bfseries}
+\setbeamerfont{footnote}{size=\tiny}
+\setbeamerfont{footline}{size=\tiny}
+
+% ── Navigation & chrome ────────────────────────────────────────────────────────
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{itemize items}[circle]
+\setbeamertemplate{enumerate items}[default]
+
+% ── Footline ───────────────────────────────────────────────────────────────────
+\setbeamertemplate{footline}{%
+  \hbox{%
+    \begin{beamercolorbox}[wd=0.5\paperwidth,ht=2.5ex,dp=1ex,leftskip=1em]{footline}%
+      \usebeamerfont{footline}\insertshorttitle%
+    \end{beamercolorbox}%
+    \begin{beamercolorbox}[wd=0.5\paperwidth,ht=2.5ex,dp=1ex,rightskip=1em,right]{footline}%
+      \usebeamerfont{footline}\insertframenumber\,/\,\inserttotalframenumber%
+    \end{beamercolorbox}%
+  }%
+}
+
+% ── Frame title ────────────────────────────────────────────────────────────────
+\setbeamertemplate{frametitle}{%
+  \nointerlineskip%
+  \begin{beamercolorbox}[wd=\paperwidth,ht=2.8ex,dp=1.2ex,leftskip=1em]{frametitle}%
+    \usebeamerfont{frametitle}\insertframetitle%
+  \end{beamercolorbox}%
+}
+
+% ── Title page ─────────────────────────────────────────────────────────────────
+\setbeamertemplate{title page}{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \fill[DarkNavy] (current page.north west) rectangle (current page.south east);
+    \node[anchor=west, text width=0.85\paperwidth] at ([xshift=1.5cm, yshift=0.5cm]current page.west) {%
+      {\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle\par}%
+      \vspace{0.4cm}%
+      {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par}%
+      \vspace{0.8cm}%
+      {\usebeamerfont{author}\usebeamercolor[fg]{author}\insertauthor\par}%
+      \vspace{0.2cm}%
+      {\usebeamerfont{date}\usebeamercolor[fg]{date}\insertinstitute\par}%
+      \vspace{0.2cm}%
+      {\usebeamerfont{date}\usebeamercolor[fg]{date}\insertdate\par}%
+    };
+  \end{tikzpicture}%
+}
+
+% ── Section pages ──────────────────────────────────────────────────────────────
+\AtBeginSection[]{%
+  \begin{frame}[plain]
+    \begin{tikzpicture}[remember picture,overlay]
+      \fill[DarkNavy] (current page.north west) rectangle (current page.south east);
+      \node[anchor=center, text width=0.7\paperwidth, align=center]
+        at (current page.center) {%
+          {\color{white}\Large\bfseries\insertsectionhead\par}%
+        };
+    \end{tikzpicture}
+  \end{frame}
+}

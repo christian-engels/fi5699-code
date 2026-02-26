@@ -1,0 +1,334 @@
+\documentclass[9pt,aspectratio=169]{beamer}
+\usetheme{StAndrews}
+
+\coursename{FI5699 Dissertation Module}
+
+\title{\LARGE \textnormal{Week 2: \\
+Key Concepts and Terms}}
+\hypersetup{pdftitle={FI5699 Week 2 -- Key Concepts and Terms}}
+
+\newcolumntype{R}{>{\raggedright\arraybackslash}p{8cm}}
+
+\begin{document}
+
+% ============================================================================
+% TITLE PAGE
+% ============================================================================
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+
+
+\begin{frame}{How to Use This Study Aid}
+
+This deck collects the \alert{key concepts and terms} from Week 2: Introduction to Python.
+
+\medskip
+
+\textbf{For each term you should be able to:}
+\begin{itemize}
+    \item Define it in your own words
+    \item Give an example or illustration
+    \item Explain why it matters for your dissertation workflow
+\end{itemize}
+
+\medskip
+
+Use these slides as prompts --- prepare your own definitions, answers and materials.
+
+\medskip
+
+\alert{Note:} This is a study aid only. It does not attempt to be comprehensive and should not be relied upon as sufficient preparation for assessment purposes.
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 1: TOOLS AND WORKFLOW
+% ============================================================================
+\section{Tools and Workflow}
+
+\begin{frame}{Positron: The Working Environment}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{Positron} & What is it (editor + console + terminal)? What do you use it for in this module? \\[0.8em]
+\alert{Editor} & What is the editor used for vs the Console? \\[0.8em]
+\alert{Console (REPL)} & What does \texttt{>>>} mean? Why is it useful for quick experimentation? \\[0.8em]
+\alert{Terminal (shell)} & What does \texttt{\$} / \texttt{PS>} mean? What kinds of commands belong here? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+\begin{frame}{Files, Folders, and Projects}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{Project folder} & Why do we keep code, data, and outputs in one folder? \\[0.8em]
+\alert{\texttt{.py} file} & What is a Python script? How do you run it in Positron? \\[0.8em]
+\alert{Interpreter session} & What is a Python session, and what happens when you restart it? \\[0.8em]
+\alert{Working directory} & Why does file location matter when you run code? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 2: ENVIRONMENTS AND PACKAGES
+% ============================================================================
+\section{Environments and Packages}
+
+\begin{frame}{Virtual Environments}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{Virtual environment (\texttt{.venv})} & What problem does it solve? Why is it a "private toolbox" for a project? \\[0.8em]
+\alert{Dependency} & What is a dependency in a Python project? \\[0.8em]
+\alert{Package} & What is a package (e.g. \texttt{polars})? \\[0.8em]
+\alert{Import} & What does \texttt{import polars as pl} do? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+\begin{frame}{\texttt{uv} and Project Metadata}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{\texttt{uv}} & What does it manage (Python + packages)? Why do we use it in this module? \\[0.8em]
+\alert{\texttt{uv venv}} & What does it create and where? \\[0.8em]
+\alert{\texttt{uv init}} & What does it create in your project folder? \\[0.8em]
+\alert{\texttt{uv add <pkg>}} & What changes when you install a package? Where do you run it (Terminal vs Console)? \\[0.8em]
+\alert{\texttt{pyproject.toml}} & What information is stored here? ("shopping list") \\[0.8em]
+\alert{\texttt{uv.lock}} & Why do we lock exact versions? (reproducibility) \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+\begin{frame}{Common Errors and Fixes}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{\texttt{ModuleNotFoundError}} & What causes it? What is the standard fix? \\[0.8em]
+\alert{Wrong tab} & What goes wrong if you type Python into the Terminal or \texttt{uv add} into the Console? \\[0.8em]
+\alert{Restart} & When should you restart a session/terminal, and what does restarting do? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 3: CORE PYTHON CONCEPTS
+% ============================================================================
+\section{Core Python Concepts}
+
+\begin{frame}{Basic Syntax and Structure}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{Expression} & What is an expression (e.g. \texttt{2 + 2}) and what does it evaluate to? \\[0.8em]
+\alert{Variable} & What does it mean to store a value under a name? \\[0.8em]
+\alert{Assignment (\texttt{=})} & What happens when you do \texttt{price = 142.5}? \\[0.8em]
+\alert{Function call} & What is a function call (e.g. \texttt{print(...)}), and why use it? \\[0.8em]
+\alert{Comment (\texttt{\#})} & What is a comment for? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+\begin{frame}{Types and Helpful Built-Ins}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{\texttt{int} / \texttt{float}} & What is the difference? Why does division often give floats? \\[0.8em]
+\alert{\texttt{str}} & What is a string and why must it be in quotes? \\[0.8em]
+\alert{\texttt{bool}} & What are \texttt{True} / \texttt{False} used for? \\[0.8em]
+\alert{\texttt{type(x)}} & What does it tell you? \\[0.8em]
+\alert{\texttt{len(x)} / \texttt{sum(x)} / \texttt{max(x)} / \texttt{min(x)}} & What kinds of inputs do these take? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+\begin{frame}{Formatting Output}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{\texttt{print()}} & When should you print instead of relying on the Console's last value? \\[0.8em]
+\alert{f-string} & What does the leading \texttt{f} do? How do braces \texttt{\{\}} work? \\[0.8em]
+\alert{Format specifier} & What do you get from \texttt{:,.2f} and why is it useful for finance outputs? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 4: DATA STRUCTURES
+% ============================================================================
+\section{Data Structures}
+
+\begin{frame}{Lists}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{List} & What is a list and how do you create one with \texttt{[~]}? \\[0.8em]
+\alert{Indexing} & Why does indexing start at 0? What does \texttt{portfolio[0]} mean? \\[0.8em]
+\alert{Negative index} & What does \texttt{portfolio[-1]} mean? \\[0.8em]
+\alert{\texttt{append}} & What does \texttt{portfolio.append("GOOGL")} do? \\[0.8em]
+\alert{\texttt{remove}} & When does \texttt{remove} fail? How would you diagnose it? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+\begin{frame}{Dictionaries}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{Dictionary} & What is a dictionary and how do you create one with \texttt{\{~\}}? \\[0.8em]
+\alert{Key / value} & What is the key and what is the value in \texttt{"price": 142.5}? \\[0.8em]
+\alert{Lookup} & What does \texttt{stock["price"]} do? \\[0.8em]
+\alert{Update} & What happens when you do \texttt{stock["price"] = 145.0}? \\[0.8em]
+\alert{\texttt{items()}} & What does iterating over \texttt{portfolio.items()} return? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 5: LOOPS AND CONTROL FLOW
+% ============================================================================
+\section{Loops and Control Flow}
+
+\begin{frame}{\texttt{for} Loops}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{\texttt{for} loop} & How do you read \texttt{for ticker in tickers:}? What repeats? \\[0.8em]
+\alert{Indentation} & Why does indentation matter in Python? \\[0.8em]
+\alert{Iterable} & What kinds of things can you loop over? (lists, dicts, \texttt{range}) \\[0.8em]
+\alert{Accumulator} & What pattern is \texttt{total += position} implementing? \\[0.8em]
+\alert{\texttt{range()}} & What does \texttt{range(5)} vs \texttt{range(1, 11)} produce? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+\begin{frame}{\texttt{while} and Nested Loops}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{\texttt{while} loop} & When do you choose \texttt{while} instead of \texttt{for}? \\[0.8em]
+\alert{Condition} & What kind of expression goes after \texttt{while}? \\[0.8em]
+\alert{Infinite loop} & What causes infinite loops? How would you stop one? \\[0.8em]
+\alert{Nested loop} & What is a loop inside a loop used for? \\[0.8em]
+\alert{Looping over dicts} & What do you get from \texttt{for k, v in d.items():}? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 6: SUMMARY
+% ============================================================================
+\section{Summary Checklist}
+
+\begin{frame}{Week 2 --- Key Terms Checklist}
+
+\textbf{Can you define and give an example for each?}
+
+\medskip
+
+\begin{columns}[T]
+\begin{column}{0.33\textwidth}
+\begin{itemize}
+    \item Positron
+    \item Editor
+    \item Console (REPL)
+    \item Terminal (shell)
+    \item \texttt{.py} file
+    \item Interpreter session
+\end{itemize}
+\end{column}
+\begin{column}{0.33\textwidth}
+\begin{itemize}
+    \item Virtual environment (\texttt{.venv})
+    \item Package / dependency
+    \item \texttt{uv venv} / \texttt{uv init}
+    \item \texttt{uv add}
+    \item \texttt{pyproject.toml}
+    \item \texttt{uv.lock}
+\end{itemize}
+\end{column}
+\begin{column}{0.33\textwidth}
+\begin{itemize}
+    \item Variable / assignment
+    \item \texttt{int}, \texttt{float}, \texttt{str}, \texttt{bool}
+    \item List / dictionary
+    \item Indexing (0-based)
+    \item \texttt{for} / \texttt{while}
+    \item \texttt{range()}
+\end{itemize}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+
+\begin{frame}{Week 2 --- Key Questions}
+
+\textbf{Can you answer these in your own words?}
+
+\begin{enumerate}
+    \item What is the difference between the Console and the Terminal in Positron?
+    \item Why do we use a virtual environment for each project?
+    \item What files do \texttt{uv init} and \texttt{uv add} create or update?
+    \item What does \texttt{import ... as ...} do and why use an alias?
+    \item How do lists and dictionaries differ, and when would you choose each?
+    \item What does it mean that Python uses 0-based indexing?
+    \item Explain how a \texttt{for} loop works, including what indentation controls.
+    \item When would you use a \texttt{while} loop instead of a \texttt{for} loop?
+\end{enumerate}
+
+\end{frame}
+
+
+\end{document}

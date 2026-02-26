@@ -1,0 +1,1555 @@
+\documentclass[9pt,aspectratio=169]{beamer}
+\usetheme{StAndrews}
+
+\coursename{FI5699 Dissertation Module}
+\graphicspath{ {./logos/} {./outputs/} {./pix/week5/} {./slides/figures/} }
+\title{\LARGE \textnormal{Week 5: \\
+Panel Regression Recap}}
+\hypersetup{pdftitle={FI5699 Week 5 -- Panel Regression Recap}}
+
+% ============================================================================
+% CODE LISTINGS SETUP
+% ============================================================================
+\usepackage{listings}
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{StAndrewsBlue}\bfseries,
+  stringstyle=\color{StAndrewsMidGreen},
+  commentstyle=\color{StAndrewsOrange}\itshape,
+  numberstyle=\tiny\color{gray},
+  numbers=left,
+  numbersep=5pt,
+  backgroundcolor=\color{gray!5},
+  frame=single,
+  rulecolor=\color{StAndrewsBlue!30},
+  breaklines=true,
+  showstringspaces=false,
+  tabsize=4,
+  xleftmargin=1.5em,
+  framexleftmargin=1em,
+  captionpos=b,
+  morekeywords={True, False, None, print, range, len, sum, max, min, type,
+                exit, int, float, str, bool, import, as, from, for, in,
+                while, def, return, class, with, open, f},
+  literate={>>>}{{\textcolor{StAndrewsBurgundy}{>{>}>}}}3,
+}
+
+% Inline code command
+\newcommand{\py}[1]{\lstinline[language=Python]{#1}}
+
+% Shell listing style (for terminal commands)
+\lstdefinestyle{shell}{
+  language={},
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle={},
+  stringstyle={},
+  commentstyle=\color{StAndrewsOrange}\itshape,
+  backgroundcolor=\color{gray!5},
+  frame=single,
+  rulecolor=\color{StAndrewsBlue!30},
+  numbers=none,
+  xleftmargin=1.5em,
+  framexleftmargin=1em,
+  breaklines=true,
+  showstringspaces=false,
+  literate={~}{{\raise.25ex\hbox{$\sim$}}}1
+           {\$}{{\textcolor{StAndrewsMidGreen}{\$}}}1,
+}
+
+% Output style (for Python output, light blue border)
+\lstdefinestyle{output}{
+  language={},
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle={},
+  stringstyle={},
+  commentstyle={},
+  backgroundcolor=\color{gray!3},
+  frame=single,
+  rulecolor=\color{StAndrewsLightBlue!50},
+  numbers=none,
+  xleftmargin=0.5em,
+  framexleftmargin=0.2em,
+  breaklines=true,
+  showstringspaces=false,
+}
+
+% Stata listing style
+\lstdefinestyle{stata}{
+  language={},
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{StAndrewsBlue}\bfseries,
+  stringstyle=\color{StAndrewsMidGreen},
+  commentstyle=\color{StAndrewsOrange}\itshape,
+  backgroundcolor=\color{gray!5},
+  frame=single,
+  rulecolor=\color{StAndrewsBurgundy!30},
+  numbers=none,
+  xleftmargin=1.5em,
+  framexleftmargin=1em,
+  breaklines=true,
+  showstringspaces=false,
+  morekeywords={reghdfe, absorb, cluster, vce, xtreg, fe, areg},
+}
+
+% ============================================================================
+% ADDITIONAL PACKAGES
+% ============================================================================
+\usetikzlibrary{decorations.pathreplacing}
+\usepackage{tcolorbox}
+
+% Custom table column types
+\newcolumntype{R}{>{\raggedright\arraybackslash}p{8cm}}
+
+% Highlight box (encouragement / key takeaways)
+\newtcolorbox{highlightbox}{
+  colback=StAndrewsLightBlue!8,
+  colframe=StAndrewsBlue!25,
+  boxrule=0.8pt,
+  arc=4pt,
+  left=6pt, right=6pt,
+  top=4pt, bottom=4pt,
+}
+
+% Warning box (common mistakes)
+\newtcolorbox{warningbox}{
+  colback=StAndrewsOrange!8,
+  colframe=StAndrewsOrange!50,
+  boxrule=0.8pt,
+  arc=4pt,
+  left=6pt, right=6pt,
+  top=4pt, bottom=4pt,
+}
+
+% Demo box (live demonstration callouts)
+\newtcolorbox{demobox}[1][Live Demonstration]{
+  colback=StAndrewsBlue!5,
+  colframe=StAndrewsBlue!50,
+  boxrule=0.8pt,
+  arc=4pt,
+  left=6pt, right=6pt,
+  top=4pt, bottom=4pt,
+  fonttitle=\bfseries,
+  title=#1,
+}
+
+
+\begin{document}
+
+% ============================================================================
+% TITLE PAGE
+% ============================================================================
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+
+
+% ============================================================================
+% SECTION 0: OPENING
+% ============================================================================
+\section{Introduction}
+\subsection{Roadmap}
+
+\begin{frame}{What We Will Cover Today}
+
+This session recaps the \alert{econometric foundations} behind most empirical finance dissertations.
+
+\medskip
+
+\begin{enumerate}
+    \item \textbf{Why Panel Data?} --- the structure behind your dataset
+    \item \textbf{The Pooled OLS Problem} --- what goes wrong without fixed effects
+    \item \textbf{Fixed Effects} --- what they absorb and what they cannot
+    \item \textbf{Clustered Standard Errors} --- getting inference right
+    \item \textbf{Running Regressions in Python} --- \texttt{pyfixest} in practice
+    \item \textbf{Presenting Results} --- publication-quality tables
+\end{enumerate}
+
+\medskip
+
+\begin{highlightbox}
+\centering
+By the end of today, you will be able to estimate, interpret, and present fixed effects regressions with clustered standard errors in Python.
+\end{highlightbox}
+
+\end{frame}
+
+
+\begin{frame}{Table of Contents}
+\footnotesize
+\begin{columns}[t]
+  \begin{column}{0.33\textwidth}
+    \tableofcontents[sections={1-3}]
+  \end{column}
+  \begin{column}{0.33\textwidth}
+    \tableofcontents[sections={4-6}]
+  \end{column}
+  \begin{column}{0.33\textwidth}
+    \tableofcontents[sections={7-8}]
+  \end{column}
+\end{columns}
+\end{frame}
+
+
+\subsection{Recap}
+\begin{frame}[fragile]{Recap: What You Built in Week 4}
+
+\begin{tabular}{@{}lp{8cm}@{}}
+\toprule
+\textbf{Concept} & \textbf{What you learned} \\
+\midrule
+Polars DataFrames & Creating, inspecting, and querying tables \\[0.3em]
+Expressions & \py{select}, \py{with_columns}, \py{filter}, \py{group_by} \\[0.3em]
+Stock returns & Downloading prices, computing \py{pct_change()}, \py{.over()} \\[0.3em]
+Joins \& reshaping & Combining tables, pivot/unpivot \\[0.3em]
+Visualisation & \texttt{plotnine} --- line charts, histograms, cumulative returns \\
+\bottomrule
+\end{tabular}
+
+\bigskip
+
+\begin{highlightbox}
+\centering
+Today we move from data manipulation to \textbf{statistical analysis} --- the regressions that will form the core of your dissertation.
+\end{highlightbox}
+
+\end{frame}
+
+
+\subsection{Motivation}
+\begin{frame}{The Central Question for Your Dissertation}
+
+Most empirical finance dissertations ask a question of the form:
+
+\bigskip
+
+\centering
+\textit{``Does \textbf{X} affect \textbf{Y}, after controlling for things we can't directly observe?''}
+
+\bigskip
+
+\raggedright
+
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Example} & \textbf{X} & \textbf{Y} \\
+\midrule
+Corporate finance & Employment protection laws & Innovation output \\[0.3em]
+Asset pricing & ESG score & Stock returns \\[0.3em]
+Banking & Capital requirements & Lending volume \\
+\bottomrule
+\end{tabular}
+
+\bigskip
+
+The workhorse tool for answering these questions is the \alert{fixed effects panel regression} with \alert{clustered standard errors}.
+
+\end{frame}
+
+
+\subsection{The Data}
+\begin{frame}{Our Running Example: Bena, Ortiz-Molina \& Simintzi (2022)}
+
+\textbf{``Shielding Firm Value: Employment Protection and Process Innovation''}\\
+\textit{Journal of Financial Economics}, 146(2), 637--664.
+
+\medskip
+
+\begin{columns}[T]
+\begin{column}{0.55\textwidth}
+\begin{tabular}{@{}lr@{}}
+\toprule
+\textbf{Feature} & \textbf{Value} \\
+\midrule
+Observations & 45,263 firm-years \\
+Firms & 4,447 \\
+Period & 1975--1997 \\
+Treatment & Employment protection laws \\
+Outcome & Process innovation \\
+\bottomrule
+\end{tabular}
+\end{column}
+\begin{column}{0.42\textwidth}
+\begin{tabular}{@{}lrr@{}}
+\toprule
+\textbf{Variable} & \textbf{Mean} & \textbf{SD} \\
+\midrule
+Process innov.\ & 1.14 & 1.82 \\
+Product innov.\ & 1.88 & 2.19 \\
+Patent stock & 1.71 & 1.61 \\
+State-yr pat.\ & 1.67 & 0.68 \\
+\bottomrule
+\end{tabular}
+\end{column}
+\end{columns}
+
+\bigskip
+
+\begin{highlightbox}
+\centering
+We will use this dataset throughout: first learning the theory, then running it in Python, then seeing real output.
+\end{highlightbox}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 1: WHY PANEL DATA?
+% ============================================================================
+\section{Why Panel Data?}
+\subsection{Structure}
+
+\begin{frame}{Panel Data Tracks Units Over Time}
+
+\begin{columns}[T]
+\begin{column}{0.52\textwidth}
+A \alert{panel dataset} has two dimensions:
+
+\medskip
+
+\bi
+    \item \textbf{Cross-section} --- many units (firms, countries, individuals)
+    \item \textbf{Time series} --- each unit observed repeatedly over time
+    \item Each row is a \textbf{unit--time} pair (e.g.\ firm--year)
+\ei
+
+\medskip
+
+This structure is what makes fixed effects possible --- and what makes standard errors tricky.
+\end{column}
+\begin{column}{0.45\textwidth}
+\centering
+\begin{tikzpicture}[
+  cell/.style={rectangle, minimum width=1.2cm, minimum height=0.45cm,
+               draw=StAndrewsBlue!30, font=\tiny, anchor=center},
+  header/.style={cell, fill=StAndrewsBlue, text=white, font=\tiny\bfseries},
+]
+  % Headers
+  \node[header] (h1) at (0,0) {firm};
+  \node[header] (h2) at (1.3,0) {year};
+  \node[header] (h3) at (2.6,0) {Y};
+  \node[header] (h4) at (3.9,0) {X};
+
+  % Firm A rows
+  \node[cell, fill=StAndrewsBlue!8] at (0,-0.45) {AAPL};
+  \node[cell, fill=StAndrewsBlue!8] at (1.3,-0.45) {2020};
+  \node[cell, fill=StAndrewsBlue!8] at (2.6,-0.45) {3.2};
+  \node[cell, fill=StAndrewsBlue!8] at (3.9,-0.45) {0.8};
+
+  \node[cell, fill=StAndrewsBlue!8] at (0,-0.9) {AAPL};
+  \node[cell, fill=StAndrewsBlue!8] at (1.3,-0.9) {2021};
+  \node[cell, fill=StAndrewsBlue!8] at (2.6,-0.9) {4.1};
+  \node[cell, fill=StAndrewsBlue!8] at (3.9,-0.9) {1.2};
+
+  \node[cell, fill=StAndrewsBlue!8] at (0,-1.35) {AAPL};
+  \node[cell, fill=StAndrewsBlue!8] at (1.3,-1.35) {2022};
+  \node[cell, fill=StAndrewsBlue!8] at (2.6,-1.35) {2.9};
+  \node[cell, fill=StAndrewsBlue!8] at (3.9,-1.35) {0.6};
+
+  % Firm B rows
+  \node[cell, fill=StAndrewsMidGreen!8] at (0,-1.8) {MSFT};
+  \node[cell, fill=StAndrewsMidGreen!8] at (1.3,-1.8) {2020};
+  \node[cell, fill=StAndrewsMidGreen!8] at (2.6,-1.8) {5.7};
+  \node[cell, fill=StAndrewsMidGreen!8] at (3.9,-1.8) {1.5};
+
+  \node[cell, fill=StAndrewsMidGreen!8] at (0,-2.25) {MSFT};
+  \node[cell, fill=StAndrewsMidGreen!8] at (1.3,-2.25) {2021};
+  \node[cell, fill=StAndrewsMidGreen!8] at (2.6,-2.25) {6.3};
+  \node[cell, fill=StAndrewsMidGreen!8] at (3.9,-2.25) {1.8};
+
+  % Brace for "within"
+  \draw[decorate, decoration={brace, amplitude=4pt}, StAndrewsBlue]
+    (4.7,-0.25) -- (4.7,-1.55) node[midway, right, font=\tiny, xshift=3pt] {within};
+\end{tikzpicture}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+
+\subsection{Advantage}
+\begin{frame}{Panel Data Lets You Control for the Unobservable}
+
+\begin{columns}[T]
+\begin{column}{0.52\textwidth}
+With \textbf{cross-sectional} data alone, you can only control for what you observe.
+
+\medskip
+
+With \textbf{panel data}, you can also control for things you \textit{cannot} directly measure:
+
+\medskip
+
+\bi
+    \item Firm culture, management quality
+    \item Country-level institutions
+    \item Macroeconomic shocks hitting all firms in a given year
+\ei
+
+\medskip
+
+This is the power of \alert{fixed effects}.
+\end{column}
+\begin{column}{0.45\textwidth}
+\centering
+\begin{tikzpicture}[node distance=0.8cm, >=stealth, thick,
+  box/.style={rectangle, rounded corners=3pt, minimum width=3.2cm,
+              minimum height=0.6cm, align=center, font=\scriptsize}]
+  \node[box, fill=StAndrewsBlue!15, draw=StAndrewsBlue!40] (cross)
+    {Cross-section only\\[1pt]Control for \textbf{observed} variables};
+  \node[box, below=1.2cm of cross, fill=StAndrewsBlue, text=white] (panel)
+    {Panel data + FE\\[1pt]Also control for \textbf{unobserved}\\time-invariant factors};
+  \draw[->, StAndrewsBlue, line width=0.8pt] (cross) -- (panel)
+    node[midway, right, font=\tiny, xshift=2pt] {repeated obs};
+\end{tikzpicture}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 2: THE POOLED OLS PROBLEM
+% ============================================================================
+\section{The Pooled OLS Problem}
+\subsection{Omitted Variable Bias}
+
+\begin{frame}{Pooled OLS Ignores Unobserved Heterogeneity}
+
+Consider estimating:
+$$Y_{it} = \alpha + \beta X_{it} + \varepsilon_{it}$$
+
+The problem: $\varepsilon_{it}$ contains \textbf{everything else} that affects $Y$ --- including time-invariant characteristics of each firm ($\mu_i$) that also correlate with $X$.
+
+\bigskip
+
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\textbf{Example:}
+\bi
+    \item $Y$ = innovation output
+    \item $X$ = employment protection law
+    \item $\mu_i$ = firm R\&D culture (unobserved)
+\ei
+
+\medskip
+
+If R\&D culture correlates with both $Y$ and $X$, your $\hat{\beta}$ is \alert{biased}.
+\end{column}
+\begin{column}{0.48\textwidth}
+\centering
+\begin{tikzpicture}[>=stealth, thick, node distance=1.5cm,
+  var/.style={circle, draw=StAndrewsBlue, fill=StAndrewsBlue!10,
+              minimum size=0.9cm, font=\scriptsize, align=center}]
+  \node[var] (x) {$X_{it}$};
+  \node[var, right=2cm of x] (y) {$Y_{it}$};
+  \node[var, above=1cm of $(x)!0.5!(y)$, draw=StAndrewsBurgundy,
+        fill=StAndrewsBurgundy!10] (u) {$\mu_i$};
+  \draw[->, line width=0.8pt] (x) -- (y) node[midway, below, font=\tiny] {$\beta$};
+  \draw[->, StAndrewsBurgundy, line width=0.8pt] (u) -- (x);
+  \draw[->, StAndrewsBurgundy, line width=0.8pt] (u) -- (y);
+\end{tikzpicture}
+
+\smallskip
+
+{\scriptsize The red arrows create \alert{omitted variable bias}.}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 3: FIXED EFFECTS
+% ============================================================================
+\section{Fixed Effects}
+\subsection{The Idea}
+
+\begin{frame}{Fixed Effects Remove Time-Invariant Confounders}
+
+The fixed effects model adds a \alert{unit-specific intercept} $\alpha_i$:
+
+$$Y_{it} = \alpha_i + \beta X_{it} + \varepsilon_{it}$$
+
+\medskip
+
+This is equivalent to \textbf{demeaning} --- subtracting each unit's time average:
+
+$$(Y_{it} - \bar{Y}_i) = \beta (X_{it} - \bar{X}_i) + (\varepsilon_{it} - \bar{\varepsilon}_i)$$
+
+\bigskip
+
+\begin{highlightbox}
+\centering
+Fixed effects exploit only \textbf{within-unit variation over time}. Anything constant within a unit (culture, geography, founding year) is absorbed by $\alpha_i$ and cannot bias $\hat{\beta}$.
+\end{highlightbox}
+
+\end{frame}
+
+
+\subsection{Types of Fixed Effects}
+\begin{frame}{Common Fixed Effects in Finance}
+
+\begin{tabular}{@{}llp{5.5cm}@{}}
+\toprule
+\textbf{Fixed effect} & \textbf{Absorbs} & \textbf{Example} \\
+\midrule
+Firm ($\alpha_i$) & Time-invariant firm traits & Management quality, founding conditions \\[0.5em]
+Year ($\delta_t$) & Common time shocks & Financial crises, regulatory changes \\[0.5em]
+Firm + Year & Both simultaneously & The standard ``two-way FE'' \\[0.5em]
+Industry $\times$ Year & Industry-specific trends & Tech boom affects tech firms differently \\[0.5em]
+State $\times$ Year & Region-specific shocks & State-level policy changes \\
+\bottomrule
+\end{tabular}
+
+\bigskip
+
+\begin{highlightbox}
+\centering
+More fixed effects = more unobservables absorbed, but also \textbf{less remaining variation} to estimate $\beta$ from. There is always a trade-off.
+\end{highlightbox}
+
+\end{frame}
+
+
+\subsection{What FE Do to Estimates}
+\begin{frame}{Firm FE cuts the patent stock coefficient nearly in half}
+
+\vspace{0.2cm}
+
+\begin{columns}[T]
+\begin{column}{0.52\textwidth}
+
+\begin{table}
+\centering\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+& \textbf{(1) OLS} & \textbf{(2) Firm} & \textbf{(3) Year} \\
+\midrule
+Patent stock
+  & 0.847$^{***}$ & \alert{0.486$^{***}$} & 0.855$^{***}$ \\
+  & \footnotesize(0.004) & \footnotesize(0.008) & \footnotesize(0.004) \\[6pt]
+State-yr pat.
+  & $-$0.019$^{*}$\phantom{**} & 0.312$^{***}$ & $-$0.069$^{***}$ \\
+  & \footnotesize(0.008) & \footnotesize(0.019) & \footnotesize(0.008) \\
+\midrule
+Firm FE  & & $\checkmark$ & \\
+Year FE  & & & $\checkmark$ \\
+\midrule
+$N$      & 45{,}263 & 44{,}898 & 45{,}263 \\
+$R^2$    & 0.555 & 0.745 & 0.569 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{column}
+\begin{column}{0.45\textwidth}
+  \centering
+  \includegraphics[width=\textwidth]{coefficient_path.pdf}
+\end{column}
+\end{columns}
+
+\vspace{0.2cm}
+
+{\small Once we compare each firm \textit{to itself} over time, the estimate \alert{drops from 0.847 to 0.486} --- much of the pooled estimate reflected cross-firm differences.}
+
+\end{frame}
+
+
+\subsection{What FE Cannot Do}
+\begin{frame}{Fixed Effects Are Not a Magic Bullet}
+
+Imai \& Kim (2019) and Mummolo \& Peterson (2018) identify critical limitations:
+
+\bigskip
+
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\textbf{FE assumes no dynamics}
+
+\bi
+    \item Past outcomes do not cause current treatment
+    \item Past treatment does not affect current outcome
+    \item Violations $\to$ inconsistent $\hat{\beta}$
+\ei
+
+\medskip
+
+{\small If treatment and outcome feed back on each other over time, FE alone is insufficient.}
+\end{column}
+\begin{column}{0.48\textwidth}
+\textbf{FE uses only within variation}
+
+\bi
+    \item $\hat{\beta}$ comes from \textit{within-unit changes}, not cross-sectional differences
+    \item Counterfactuals should reflect \textit{plausible within-unit shifts}
+    \item Many published papers overstate effect sizes by using overall (not within) variation
+\ei
+\end{column}
+\end{columns}
+
+\end{frame}
+
+
+\begin{frame}{Interpreting FE Results Honestly}
+
+Mummolo \& Peterson (2018) surveyed 54 studies using FE and found that most discussed counterfactuals far larger than any within-unit variation observed.
+
+\bigskip
+
+\textbf{Their checklist for your dissertation:}
+
+\medskip
+
+\begin{enumerate}
+    \item \textbf{Residualize} $X$ with respect to your fixed effects --- this reveals the actual variation driving $\hat{\beta}$
+    \item \textbf{Report the within-unit standard deviation} of $X$, not the overall SD
+    \item \textbf{Use plausible counterfactuals} --- a one-SD \textit{within-unit} shift, not a min-to-max shift
+    \item \textbf{Report the share of units with zero within-unit variation} --- these contribute nothing to estimation
+\end{enumerate}
+
+\bigskip
+
+\begin{warningbox}
+\centering
+If your counterfactual is 5$\times$ the within-unit SD, your effect size claim is implausible.
+\end{warningbox}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 4: CLUSTERED STANDARD ERRORS
+% ============================================================================
+\section{Clustered Standard Errors}
+\subsection{The Problem with OLS SEs}
+
+\begin{frame}{OLS Standard Errors Assume Independence}
+
+OLS standard errors assume that $\varepsilon_{it}$ and $\varepsilon_{js}$ are uncorrelated for any two different observations. In panel data, this assumption almost always fails:
+
+\bigskip
+
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\textbf{Firm effect:} Residuals for the same firm are correlated across years.
+
+\medskip
+
+{\small Apple's unobserved shocks in 2020 are correlated with its shocks in 2021.}
+
+\medskip
+
+$\Rightarrow$ OLS SEs too small $\Rightarrow$ false significance
+\end{column}
+\begin{column}{0.48\textwidth}
+\textbf{Time effect:} Residuals for different firms are correlated within the same year.
+
+\medskip
+
+{\small A recession hits all firms simultaneously.}
+
+\medskip
+
+$\Rightarrow$ OLS SEs too small $\Rightarrow$ false significance
+\end{column}
+\end{columns}
+
+\bigskip
+
+\begin{highlightbox}
+\centering
+Petersen (2009): with moderate within-cluster correlation, \textbf{15\% of tests reject at 1\%} when the true rejection rate should be 1\%.
+\end{highlightbox}
+
+\end{frame}
+
+
+\subsection{The Solution}
+\begin{frame}{Clustered SEs Allow for Within-Group Correlation}
+
+\alert{Clustered standard errors} relax the independence assumption \textit{within} clusters:
+
+$$\hat{V}_{\text{cluster}} = (X'X)^{-1} \left[\sum_{g=1}^{G} X_g' \hat{\varepsilon}_g \hat{\varepsilon}_g' X_g \right] (X'X)^{-1}$$
+
+\medskip
+
+\begin{tabular}{@{}llp{5cm}@{}}
+\toprule
+\textbf{Cluster by} & \textbf{Allows correlation} & \textbf{When to use} \\
+\midrule
+Firm & Within firm, across time & Firm-level shocks persist \\[0.4em]
+Year & Within year, across firms & Common macro shocks \\[0.4em]
+Firm + Year & Both dimensions & Both effects present \\
+\bottomrule
+\end{tabular}
+
+\bigskip
+
+\begin{highlightbox}
+\centering
+\textbf{Rule of thumb:} You need at least 30--50 clusters for reliable inference. Clustering by year with only 10 years of data is problematic.
+\end{highlightbox}
+
+\end{frame}
+
+
+\begin{frame}{Clustering doubles standard errors but does not change point estimates}
+
+\vspace{0.2cm}
+
+\begin{columns}[T]
+\begin{column}{0.52\textwidth}
+
+\begin{table}
+\centering\footnotesize
+\setlength{\tabcolsep}{3.5pt}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+& \textbf{(4) Two-Way FE} & \textbf{(5) Two-Way FE} \\
+& \textbf{(IID SE)} & \textbf{(Clustered SE)} \\
+\midrule
+Patent stock
+  & 0.523$^{***}$ & 0.523$^{***}$ \\
+  & \scriptsize(0.010) & \scriptsize\alert{(0.024)} \\[6pt]
+State-yr pat.
+  & 0.114$^{***}$ & 0.114$^{**}$\phantom{*} \\
+  & \scriptsize(0.022) & \scriptsize\alert{(0.036)} \\
+\midrule
+Firm + Year FE  & $\checkmark$ & $\checkmark$ \\
+S.E.\ type & IID & \alert{Clustered} \\
+\midrule
+$N$      & 44{,}898 & 44{,}898 \\
+$R^2$    & 0.749 & 0.749 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{column}
+\begin{column}{0.44\textwidth}
+  \centering
+  \includegraphics[width=\textwidth]{se_comparison.pdf}
+
+  \vspace{0.2cm}
+  {\small IID SEs assume independence.
+  Petersen (2009, \textit{RFS}) shows they
+  are biased downward in panels.}
+
+  \vspace{0.15cm}
+  {\small\textbf{Rule:} Cluster at minimum by
+  firm, or at the treatment level.}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+
+\subsection{Petersen's Diagnostic}
+\begin{frame}{Petersen (2009): Diagnose Your Data's Dependence Structure}
+
+Compare standard errors across methods to identify which effect dominates:
+
+\bigskip
+
+\begin{tabular}{@{}lp{7cm}@{}}
+\toprule
+\textbf{Pattern you observe} & \textbf{Diagnosis} \\
+\midrule
+$\text{SE}_{\text{firm}} \gg \text{SE}_{\text{White}}$ & Firm effect dominates $\to$ cluster by firm \\[0.5em]
+$\text{SE}_{\text{year}} \gg \text{SE}_{\text{White}}$ & Time effect dominates $\to$ cluster by time \\[0.5em]
+Both are large & Both effects $\to$ two-way cluster \\
+\bottomrule
+\end{tabular}
+
+\bigskip
+
+\textbf{Petersen's finding from real data:}
+
+\bi
+    \item \textbf{Asset pricing} (firm--month): time effect dominates $\to$ Fama--MacBeth or cluster by time
+    \item \textbf{Corporate finance} (firm--year): firm effect dominates $\to$ cluster by firm
+\ei
+
+\end{frame}
+
+
+\begin{frame}[fragile]{Two-Way Clustering Handles Both Dimensions}
+
+When both firm and time effects are present, use \alert{two-way clustering} (Thompson 2005):
+
+$$\hat{V}_{\text{two-way}} = \hat{V}_{\text{firm}} + \hat{V}_{\text{time}} - \hat{V}_{\text{White}}$$
+
+\medskip
+
+\bi
+    \item Combines the firm-clustered and time-clustered variance matrices
+    \item Subtracts the White (diagonal) matrix to avoid double-counting
+    \item Produces correctly sized confidence intervals when both effects are present
+\ei
+
+\bigskip
+
+\begin{highlightbox}
+\centering
+In \texttt{pyfixest}, two-way clustering is a single argument: \texttt{vcov=\{"CRV1": "firm + year"\}}.
+\end{highlightbox}
+
+\end{frame}
+
+
+\subsection{When to Cluster}
+\begin{frame}{Abadie et al.\ (2023): Clustering Is Not Always Necessary}
+
+A common misconception: ``always cluster to be safe.'' Abadie, Athey, Imbens \& Wooldridge (2023) show this can be \alert{severely over-conservative}.
+
+\medskip
+
+\begin{tabular}{@{}lp{6.5cm}@{}}
+\toprule
+\textbf{Scenario} & \textbf{Correct approach} \\
+\midrule
+Treatment at cluster level (e.g.\ state law) & Cluster by that level \\[0.4em]
+Treatment varies within clusters, all sampled & Robust (HC1) SEs may suffice \\[0.4em]
+Clusters sampled from larger population & Cluster for sampling uncertainty \\
+\bottomrule
+\end{tabular}
+
+\medskip
+
+\begin{warningbox}
+\centering
+In their Census application, conventional cluster SEs were \textbf{19$\times$} the correct SEs. Unnecessary clustering destroys power.
+\end{warningbox}
+
+\end{frame}
+
+
+\begin{frame}{A Decision Framework for Your Dissertation}
+
+\vspace{-0.8em}
+
+\begin{tikzpicture}[node distance=0.7cm, >=stealth, thick,
+  box/.style={rectangle, rounded corners=3pt, minimum width=3.5cm,
+              minimum height=0.5cm, align=center, font=\scriptsize},
+  decision/.style={diamond, aspect=2.5, minimum width=2.2cm,
+                   align=center, font=\scriptsize}]
+
+  \node[decision, draw=StAndrewsBlue, fill=StAndrewsBlue!10] (q1)
+    {Treatment varies\\within clusters?};
+  \node[box, right=2cm of q1, fill=StAndrewsBlue, text=white] (cluster)
+    {Cluster at treatment\\assignment level};
+  \node[decision, below=0.9cm of q1, draw=StAndrewsMidBlue, fill=StAndrewsMidBlue!10] (q2)
+    {Residuals correlated\\within firms?};
+  \node[box, right=2cm of q2, fill=StAndrewsMidBlue, text=white] (robust)
+    {Robust (HC1)\\SEs may suffice};
+  \node[box, below=0.9cm of q2, fill=StAndrewsMidGreen, text=white] (twoway)
+    {Compare SE methods\\(Petersen diagnostic)};
+
+  \draw[->, line width=0.8pt] (q1) -- node[above, font=\tiny] {No} (cluster);
+  \draw[->, line width=0.8pt] (q1) -- node[left, font=\tiny] {Yes} (q2);
+  \draw[->, line width=0.8pt] (q2) -- node[above, font=\tiny] {No} (robust);
+  \draw[->, line width=0.8pt] (q2) -- node[left, font=\tiny] {Unsure} (twoway);
+\end{tikzpicture}
+
+\smallskip
+
+\begin{highlightbox}
+\centering
+For most corporate finance dissertations: \textbf{two-way FE} (firm + year) with \textbf{SEs clustered by firm} is a sensible default. But always check.
+\end{highlightbox}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 5: STATA TO PYTHON
+% ============================================================================
+\section{From Stata to Python}
+\subsection{The Rosetta Stone}
+
+\begin{frame}[fragile]{Stata to Python: The Same Regression, Two Languages}
+
+Most published finance papers use Stata's \texttt{reghdfe}. Your dissertation will use Python's \texttt{pyfixest} --- which has the \textbf{same syntax}.
+
+\bigskip
+
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\textbf{Stata}
+\begin{lstlisting}[style=stata]
+reghdfe y x1 x2,
+    absorb(firm year)
+    cluster(firm)
+\end{lstlisting}
+\end{column}
+\begin{column}{0.48\textwidth}
+\textbf{Python (pyfixest)}
+\begin{lstlisting}
+import pyfixest as pf
+
+pf.feols(
+    "y ~ x1 + x2 | firm + year",
+    vcov={"CRV1": "firm"},
+    data=df,
+)
+\end{lstlisting}
+\end{column}
+\end{columns}
+
+\bigskip
+
+The formula syntax: \texttt{depvar \textasciitilde{} covariates | fixed\_effects}
+
+\medskip
+
+The \texttt{|} separates what you estimate from what you absorb.
+
+\end{frame}
+
+
+\begin{frame}[fragile]{A Real Example: Bena, Ortiz-Molina \& Simintzi}
+
+\vspace{-0.3em}
+
+\begin{columns}[T]
+\begin{column}{0.47\textwidth}
+\textbf{Stata (original)}
+\begin{lstlisting}[style=stata,basicstyle=\ttfamily\scriptsize]
+reghdfe cl_pcs gf ic pp
+    L1log1pspat L1log1psrd
+    L1logsales L1logmtbr
+    L1pgdp L1pctdem,
+    absorb(gvkey fyear)
+    cluster(statecd)
+\end{lstlisting}
+\end{column}
+\begin{column}{0.50\textwidth}
+\textbf{Python (pyfixest)}
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+fit = pf.feols(
+    "cl_pcs ~ gf + ic + pp"
+    " + L1log1pspat + L1log1psrd"
+    " + L1logsales + L1logmtbr"
+    " + L1pgdp + L1pctdem"
+    " | gvkey + fyear",
+    vcov={"CRV1": "statecd"},
+    data=df,
+)
+\end{lstlisting}
+\end{column}
+\end{columns}
+
+\medskip
+
+\begin{highlightbox}
+\centering
+Same regression, same results. The translation is almost mechanical.
+\end{highlightbox}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 6: PYFIXEST IN PRACTICE
+% ============================================================================
+\section{Running Regressions in Python}
+\subsection{Setup}
+
+\begin{frame}[fragile]{Getting Started with \texttt{pyfixest}}
+
+Install it in your project:
+
+\begin{lstlisting}[style=shell]
+$ uv add pyfixest
+\end{lstlisting}
+
+\medskip
+
+Then import and load the Bena et al.\ (2022) panel data:
+
+\begin{lstlisting}
+import pandas as pd
+import pyfixest as pf
+
+df = pd.read_csv("data/bena_ortiz_molina_simintzi_2022.csv")
+print(f"Observations: {len(df):,}")
+print(f"Firms:        {df['gvkey'].nunique():,}")
+print(f"Years:        {df['fyear'].min()} - {df['fyear'].max()}")
+\end{lstlisting}
+
+\medskip
+
+\begin{lstlisting}[style=output]
+Observations: 45,263
+Firms:        4,447
+Years:        1975 - 1997
+\end{lstlisting}
+
+\end{frame}
+
+
+\subsection{Building Models Step by Step}
+\begin{frame}[fragile]{Step 1: Pooled OLS (No Fixed Effects)}
+
+\begin{lstlisting}
+m1 = pf.feols("cl_pcs ~ L1log1pspat + logstyrpat", data=df)
+m1.summary()
+\end{lstlisting}
+
+\begin{lstlisting}[style=output]
+Dep. var.: cl_pcs, Fixed effects: 0
+Observations:  45263
+
+| Coefficient   |   Estimate |  Std. Error |  t value |
+|:--------------|----------: |----------:  |--------: |
+| L1log1pspat   |      0.847 |       0.004 |  235.513 |
+| logstyrpat    |     -0.019 |       0.008 |   -2.239 |
+---
+RMSE: 1.217  R2: 0.555
+\end{lstlisting}
+
+\medskip
+
+\begin{tabular}{@{}lp{7cm}@{}}
+\toprule
+\textbf{Argument} & \textbf{What it does} \\
+\midrule
+\py{"cl_pcs ~ L1log1pspat + logstyrpat"} & Formula: outcome \textasciitilde{} covariates \\[0.3em]
+\py{data=df} & The DataFrame containing your variables \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+\begin{frame}[fragile]{Step 2: Add Firm Fixed Effects}
+
+\begin{lstlisting}
+m2 = pf.feols("cl_pcs ~ L1log1pspat + logstyrpat | gvkey", data=df)
+\end{lstlisting}
+
+\begin{lstlisting}[style=output]
+Dep. var.: cl_pcs, Fixed effects: gvkey
+Observations:  44898
+
+| Coefficient   |   Estimate |  Std. Error |  t value |
+|:--------------|----------: |----------:  |--------: |
+| L1log1pspat   |      0.486 |       0.008 |   58.615 |
+| logstyrpat    |      0.312 |       0.019 |   16.139 |
+---
+RMSE: 0.921  R2: 0.745
+\end{lstlisting}
+
+\medskip
+
+\bi
+    \item The \texttt{| gvkey} tells \texttt{pyfixest} to absorb firm fixed effects
+    \item Patent stock coefficient \alert{drops from 0.847 to 0.486} --- within-firm variation only
+    \item 365 singleton firms (one observation) are dropped
+\ei
+
+\end{frame}
+
+
+\begin{frame}[fragile]{Step 3: Two-Way Fixed Effects}
+
+\begin{lstlisting}
+m4 = pf.feols(
+    "cl_pcs ~ L1log1pspat + logstyrpat | gvkey + fyear", data=df
+)
+\end{lstlisting}
+
+\begin{lstlisting}[style=output]
+Dep. var.: cl_pcs, Fixed effects: gvkey+fyear
+Observations:  44898
+
+| Coefficient   |   Estimate |  Std. Error |  t value |
+|:--------------|----------: |----------:  |--------: |
+| L1log1pspat   |      0.523 |       0.010 |   51.572 |
+| logstyrpat    |      0.114 |       0.022 |    5.122 |
+---
+RMSE: 0.914  R2: 0.749
+\end{lstlisting}
+
+\medskip
+
+\bi
+    \item \texttt{gvkey + fyear} absorbs firm and year fixed effects simultaneously
+    \item Coefficient stabilises at \textbf{0.523} --- the preferred two-way FE estimate
+    \item Equivalent to Stata's \texttt{absorb(gvkey fyear)}
+\ei
+
+\end{frame}
+
+
+\begin{frame}[fragile]{Step 4: Add Clustered Standard Errors}
+
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+# One-way clustering by firm
+m5 = pf.feols("cl_pcs ~ L1log1pspat + logstyrpat | gvkey + fyear",
+               vcov={"CRV1": "gvkey"}, data=df)
+\end{lstlisting}
+
+\begin{lstlisting}[style=output, basicstyle=\ttfamily\scriptsize]
+Inference:  CRV1
+| Coefficient   |   Estimate |  Std. Error |  t value |
+|:--------------|----------: |----------:  |--------: |
+| L1log1pspat   |      0.523 |       0.024 |   22.256 |
+| logstyrpat    |      0.114 |       0.036 |    3.149 |
+\end{lstlisting}
+
+\medskip
+
+\begin{tabular}{@{}lp{6cm}@{}}
+\toprule
+\textbf{vcov argument} & \textbf{What it does} \\
+\midrule
+\py{"iid"} & Homoskedastic (classical) SEs \\[0.2em]
+\py{"HC1"} & Heteroskedasticity-robust \\[0.2em]
+\texttt{\{"CRV1": "gvkey"\}} & Cluster by firm \\[0.2em]
+\texttt{\{"CRV1": "gvkey + fyear"\}} & Two-way cluster by firm and year \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+\begin{frame}[fragile]{You Can Change Standard Errors After Estimation}
+
+A powerful feature: re-compute SEs without re-running the regression.
+
+\begin{lstlisting}
+# Estimate once
+fit = pf.feols("cl_pcs ~ L1log1pspat + logstyrpat | gvkey + fyear",
+               data=df)
+
+# Compare different SE methods
+fit.vcov("iid").summary()       # SE = 0.010
+fit.vcov("HC1").summary()       # SE = 0.012
+fit.vcov({"CRV1": "gvkey"}).summary()  # SE = 0.024
+\end{lstlisting}
+
+\medskip
+
+\begin{highlightbox}
+\centering
+This is Petersen's diagnostic in practice: run the regression once, then compare how SEs change across clustering methods to identify the dependence structure.
+\end{highlightbox}
+
+\end{frame}
+
+
+\subsection{Extracting Results}
+\begin{frame}[fragile]{Extracting What You Need}
+
+\begin{lstlisting}
+fit = pf.feols("cl_pcs ~ L1log1pspat + logstyrpat | gvkey + fyear",
+               vcov={"CRV1": "gvkey"}, data=df)
+
+fit.coef()       # coefficient estimates
+fit.se()         # standard errors
+fit.tstat()      # t-statistics
+fit.pvalue()     # p-values
+fit.confint()    # confidence intervals
+fit.tidy()       # everything in one DataFrame
+\end{lstlisting}
+
+\medskip
+
+\py{fit.tidy()} returns a clean DataFrame with coefficients, SEs, t-stats, p-values, and confidence intervals --- ready for further analysis or export.
+
+\end{frame}
+
+
+\subsection{Stepwise Models}
+\begin{frame}[fragile]{Running Multiple Specifications at Once}
+
+\texttt{pyfixest} can estimate multiple models in a single call:
+
+\begin{lstlisting}
+# csw0(): cumulative stepwise, including baseline
+fits = pf.feols("cl_pcs ~ csw0(L1log1pspat, logstyrpat) | gvkey + fyear",
+                vcov={"CRV1": "gvkey"}, data=df)
+\end{lstlisting}
+
+\smallskip
+
+This estimates \textbf{three} models:
+
+\smallskip
+
+{\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Model} & \textbf{Formula} \\
+\midrule
+(1) & \texttt{cl\_pcs \textasciitilde{} 1 | gvkey + fyear} \\
+(2) & \texttt{cl\_pcs \textasciitilde{} L1log1pspat | gvkey + fyear} \\
+(3) & \texttt{cl\_pcs \textasciitilde{} L1log1pspat + logstyrpat | gvkey + fyear} \\
+\bottomrule
+\end{tabular}}
+
+\smallskip
+
+\begin{highlightbox}
+\centering
+This mirrors a ``kitchen sink'' progression --- adding controls one at a time.
+\end{highlightbox}
+
+\end{frame}
+
+
+\subsection{Exercises}
+\begin{frame}[fragile]{Exercise 1: Run Your First Regressions}
+
+\begin{alertblock}{Try It Yourself (10 minutes)}
+\begin{enumerate}
+    \item Install \texttt{pyfixest}: \texttt{uv add pyfixest}
+    \item Load the Bena et al.\ data from \texttt{week-5-code/data/}
+    \item Run a pooled OLS: \py{pf.feols("cl_pcs ~ L1log1pspat + logstyrpat", data=df)}
+    \item Add firm FE: \py{pf.feols("cl_pcs ~ ... | gvkey", data=df)}
+    \item Add two-way FE: \py{pf.feols("cl_pcs ~ ... | gvkey + fyear", data=df)}
+    \item Compare: how does the coefficient on \texttt{L1log1pspat} change?
+    \item \textbf{Bonus:} Use \py{.vcov()} to compare IID, robust, and firm-clustered SEs
+\end{enumerate}
+\end{alertblock}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 7: PRESENTING RESULTS
+% ============================================================================
+\section{Presenting Results}
+\subsection{Regression Tables}
+
+\begin{frame}[fragile]{Publication-Quality Tables with \texttt{etable()}}
+
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+pf.etable(
+    [m1, m2, m3, m4, m5],
+    labels={"cl_pcs": "Process Innovation",
+            "L1log1pspat": "Lagged Patent Stock",
+            "logstyrpat": "State-Year Patents"},
+)
+\end{lstlisting}
+
+\medskip
+
+This is the actual output from our five models:
+
+\smallskip
+
+{\scriptsize
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+& \textbf{(1)} & \textbf{(2)} & \textbf{(3)} & \textbf{(4)} & \textbf{(5)} \\
+& Pooled & Firm FE & Year FE & Two-Way & Clustered \\
+\midrule
+Lagged Patent Stock
+  & 0.847$^{***}$ & 0.486$^{***}$ & 0.855$^{***}$ & 0.523$^{***}$ & 0.523$^{***}$ \\
+  & \tiny(0.004) & \tiny(0.008) & \tiny(0.004) & \tiny(0.010) & \tiny\alert{(0.024)} \\[3pt]
+State-Year Patents
+  & $-$0.019$^{*}$\phantom{**} & 0.312$^{***}$ & $-$0.069$^{***}$ & 0.114$^{***}$ & 0.114$^{**}$\phantom{*} \\
+  & \tiny(0.008) & \tiny(0.019) & \tiny(0.008) & \tiny(0.022) & \tiny\alert{(0.036)} \\
+\midrule
+Firm FE  & & $\checkmark$ & & $\checkmark$ & $\checkmark$ \\
+Year FE  & & & $\checkmark$ & $\checkmark$ & $\checkmark$ \\
+S.E.\ type & IID & IID & IID & IID & Clustered \\
+\midrule
+$N$      & 45{,}263 & 44{,}898 & 45{,}263 & 44{,}898 & 44{,}898 \\
+$R^2$    & 0.555 & 0.745 & 0.569 & 0.749 & 0.749 \\
+\bottomrule
+\end{tabular}}
+
+\end{frame}
+
+
+\begin{frame}[fragile]{Customising the Table}
+
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+pf.etable(
+    [m5, m6],
+    labels={"cl_pcs": "Process Innovation",
+            "cl_pdt": "Product Innovation",
+            "L1log1pspat": "Lagged Patent Stock",
+            "logstyrpat": "State-Year Patents"},
+    coef_fmt="b \n (se)",     # coefficient over SE
+    signif_code=[0.01, 0.05, 0.1],
+    type="gt",                # interactive table
+)
+\end{lstlisting}
+
+\medskip
+
+\begin{tabular}{@{}lp{6cm}@{}}
+\toprule
+\textbf{Option} & \textbf{What it does} \\
+\midrule
+\py{labels} & Replace variable names with readable labels \\[0.2em]
+\py{coef_fmt} & Control display format (\texttt{b (t)} for t-stats) \\[0.2em]
+\py{type="tex"} & Output as \LaTeX{} for your dissertation \\[0.2em]
+\py{keep=["L1log1pspat"]} & Show only selected coefficients \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+\begin{frame}[fragile]{Exporting Tables for Your Dissertation}
+
+\begin{lstlisting}
+# Export as LaTeX
+pf.etable(
+    [m1, m2, m4, m5],
+    labels={"L1log1pspat": "Lagged Patent Stock",
+            "logstyrpat": "State-Year Patents"},
+    type="tex",
+    file_name="results/table_1.tex",
+)
+\end{lstlisting}
+
+\medskip
+
+This writes a complete \LaTeX{} table using \texttt{booktabs} and \texttt{threeparttable} that you can include directly in your dissertation:
+
+\begin{lstlisting}[language=TeX, basicstyle=\ttfamily\scriptsize]
+\input{results/table_1.tex}
+\end{lstlisting}
+
+\bigskip
+
+\begin{highlightbox}
+\centering
+\textbf{Workflow:} Run your Python script $\to$ export table to \texttt{.tex} $\to$ include in your \LaTeX{} document. Change one number in Python and the table updates everywhere.
+\end{highlightbox}
+
+\end{frame}
+
+
+\subsection{Coefficient Plots}
+\begin{frame}[fragile]{Coefficient Plots: Visualising Your Results}
+
+\begin{columns}[T]
+\begin{column}{0.52\textwidth}
+Sometimes a chart communicates better than a table:
+
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+pf.coefplot([m1, m2, m4, m5])
+\end{lstlisting}
+
+\medskip
+
+This plots each coefficient with its confidence interval. Useful for:
+
+\bi
+    \item Comparing coefficients across specifications
+    \item Showing which variables are significant
+    \item Event study plots (leads and lags)
+\ei
+
+\medskip
+
+You can also use \texttt{plotnine} with \py{fit.tidy()} for full control over the plot aesthetics.
+\end{column}
+\begin{column}{0.45\textwidth}
+  \centering
+  \includegraphics[width=\textwidth]{coefficient_path.pdf}
+
+  \vspace{0.1cm}
+  {\scriptsize Actual output: the coefficient on patent stock drops by 38\% from pooled OLS to two-way FE.}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+
+\begin{frame}{Patent stock predicts both process and product innovation equally}
+
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+
+\begin{table}
+\centering\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+& \textbf{Process} & \textbf{Product} \\
+\midrule
+Patent stock
+  & 0.523$^{***}$ & 0.522$^{***}$ \\
+  & \footnotesize(0.024) & \footnotesize(0.026) \\[6pt]
+State-yr pat.
+  & 0.114$^{**}$\phantom{*} & 0.136$^{**}$\phantom{*} \\
+  & \footnotesize(0.036) & \footnotesize(0.042) \\
+\midrule
+Firm FE  & $\checkmark$ & $\checkmark$ \\
+Year FE  & $\checkmark$ & $\checkmark$ \\
+Clustered SE & $\checkmark$ & $\checkmark$ \\
+\midrule
+$N$      & 44{,}898 & 44{,}898 \\
+$R^2$    & 0.749 & 0.718 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{column}
+\begin{column}{0.46\textwidth}
+  \centering
+  \includegraphics[width=\textwidth]{process_vs_product.pdf}
+\end{column}
+\end{columns}
+
+\vspace{0.1cm}
+{\small The coefficient on patent stock is nearly identical for both outcomes.
+The regional innovation environment matters slightly more for product innovation.}
+
+\end{frame}
+
+
+\subsection{Hypothesis Testing}
+\begin{frame}[fragile]{Testing Hypotheses About Your Coefficients}
+
+The \texttt{marginaleffects} package works with \texttt{pyfixest} for hypothesis testing:
+
+\begin{lstlisting}[style=shell]
+$ uv add marginaleffects
+\end{lstlisting}
+
+\begin{lstlisting}
+from marginaleffects import hypotheses
+
+fit = pf.feols("cl_pcs ~ L1log1pspat + logstyrpat | gvkey + fyear",
+               vcov={"CRV1": "gvkey"}, data=df)
+
+# Test: is the patent stock effect = state-year effect?
+hypotheses(fit, "L1log1pspat - logstyrpat = 0")
+
+# Non-linear hypothesis (delta method)
+hypotheses(fit, "(L1log1pspat / logstyrpat) = 1")
+\end{lstlisting}
+
+\medskip
+
+The \alert{delta method} computes correct standard errors for non-linear transformations of coefficients --- essential for ratios, percentage effects, and elasticities.
+
+\end{frame}
+
+
+\subsection{Exercises}
+\begin{frame}[fragile]{Exercise 2: Build a Regression Table}
+
+\begin{alertblock}{Try It Yourself (10 minutes)}
+\begin{enumerate}
+    \item Re-run the five models from \texttt{01\_fixed\_effects\_regressions.py}
+    \item Use \py{pf.etable([m1, m2, m3, m4, m5])} to display them side by side
+    \item Add labels with the \py{labels=} argument
+    \item Try \py{pf.coefplot([m1, m4, m5])}
+    \item \textbf{Bonus:} Export the table as \LaTeX{} with \py{type="tex"}
+    \item \textbf{Bonus:} Swap the dependent variable to \texttt{cl\_pdt} (product innovation) and compare
+\end{enumerate}
+\end{alertblock}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 8: SUMMARY
+% ============================================================================
+\section{Summary}
+\subsection{Key Takeaways}
+
+\begin{frame}[fragile]{What You Learned Today}
+
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\textbf{Econometric foundations}
+\begin{itemize}
+    \item Panel data: unit $\times$ time structure
+    \item Pooled OLS and omitted variable bias
+    \item Fixed effects absorb time-invariant confounders
+    \item FE limitations: no dynamics, within variation only
+    \item Mummolo \& Peterson: honest counterfactuals
+\end{itemize}
+\end{column}
+\begin{column}{0.48\textwidth}
+\textbf{Inference and Python}
+\begin{itemize}
+    \item Why OLS SEs are biased in panels
+    \item Clustered SEs: one-way, two-way
+    \item Petersen's diagnostic for choosing SE method
+    \item Abadie et al.: clustering is not always needed
+    \item \texttt{pyfixest}: \py{feols()}, \py{etable()}, \py{coefplot()}
+    \item \LaTeX{} export for your dissertation
+\end{itemize}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+
+\subsection{The Literature Behind Today's Lecture}
+
+\begin{frame}{Four Papers You Should Know}
+
+\begin{tabular}{@{}lp{9.5cm}@{}}
+\toprule
+\textbf{Paper} & \textbf{Key insight for your dissertation} \\
+\midrule
+Petersen (2009) & Compare SE methods to diagnose dependence structure; firm effect $\to$ cluster by firm; time effect $\to$ Fama--MacBeth or cluster by time \\[0.5em]
+Imai \& Kim (2019) & FE assumes no dynamic feedback between treatment and outcome; if treatment persists or outcomes feed back, FE is inconsistent \\[0.5em]
+Mummolo \& Peterson (2018) & Use within-unit SD for counterfactuals; many published effect sizes are overstated \\[0.5em]
+Abadie et al.\ (2023) & Cluster at the level of treatment assignment; unnecessary clustering wastes statistical power \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+\subsection{Self-Check}
+\begin{frame}[fragile]{Quick Self-Check}
+
+\textbf{Can you answer these in your own words?}
+
+\be
+    \item What does a firm fixed effect absorb, and what can it \textit{not} absorb?
+    \item Why did the patent stock coefficient drop from 0.847 to 0.486 when we added firm FE?
+    \item When should you cluster by firm vs.\ by time vs.\ two-way?
+    \item In \texttt{pyfixest}, what does the \texttt{|} in the formula do?
+    \item What is the difference between \texttt{vcov="HC1"} and \texttt{vcov=\{"CRV1": "gvkey"\}}?
+    \item Why does Mummolo \& Peterson (2018) say you should residualize X before interpreting effect sizes?
+\ee
+
+\end{frame}
+
+
+\subsection{Next Steps}
+\begin{frame}{What's Next}
+
+\bi
+    \item Next week: applying these tools to \alert{your dissertation data}
+    \item \textbf{Homework:}
+    \begin{itemize}
+        \item Run \texttt{week-5-code/01\_fixed\_effects\_regressions.py} and verify you get the same results
+        \item Replicate one regression table from a published paper in your area using \texttt{pyfixest}
+        \item Read Petersen (2009) Sections I--III
+    \end{itemize}
+    \item Resources:
+    \begin{itemize}
+        \item pyfixest docs: \url{https://www.pyfixest.org/quickstart.html}
+        \item Tidy Finance (Python): \url{https://www.tidy-finance.org/python/fixed-effects-and-clustered-standard-errors.html}
+        \item Petersen SE website: \url{https://www.kellogg.northwestern.edu/faculty/petersen/htm/papers/se/se_programming.htm}
+    \end{itemize}
+\ei
+
+\medskip
+
+\begin{highlightbox}
+\centering
+If something breaks: read the error message, check your formula syntax, try again.\\
+Still stuck? Email me at \href{mailto:ce50@st-andrews.ac.uk}{ce50@st-andrews.ac.uk}.
+\end{highlightbox}
+
+\end{frame}
+
+
+\end{document}

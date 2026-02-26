@@ -1,0 +1,1398 @@
+\documentclass[9pt,aspectratio=169]{beamer}
+\usetheme{StAndrews}
+
+\coursename{FI5699 Dissertation Module}
+\graphicspath{ {./logos/} {./outputs/} {./pix/week2/} }
+\title{\LARGE \textnormal{Week 2: \\
+Introduction to Python}}
+\hypersetup{pdftitle={FI5699 Week 2 -- Introduction to Python}}
+
+% ============================================================================
+% CODE LISTINGS SETUP
+% ============================================================================
+\usepackage{listings}
+\lstset{
+  language=Python,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{StAndrewsBlue}\bfseries,
+  stringstyle=\color{StAndrewsMidGreen},
+  commentstyle=\color{StAndrewsOrange}\itshape,
+  numberstyle=\tiny\color{gray},
+  numbers=left,
+  numbersep=5pt,
+  backgroundcolor=\color{gray!5},
+  frame=single,
+  rulecolor=\color{StAndrewsBlue!30},
+  breaklines=true,
+  showstringspaces=false,
+  tabsize=4,
+  xleftmargin=1.5em,
+  framexleftmargin=1em,
+  captionpos=b,
+  morekeywords={True, False, None, print, range, len, sum, max, min, type,
+                exit, int, float, str, bool, import, as, from, for, in,
+                while, def, return, class, with, open, f},
+  literate={>>>}{{\textcolor{StAndrewsBurgundy}{>{>}>}}}3,
+}
+
+% Inline code command
+\newcommand{\py}[1]{\lstinline[language=Python]{#1}}
+
+% Shell listing style (for terminal commands)
+\lstdefinestyle{shell}{
+  language={},
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle={},
+  stringstyle={},
+  commentstyle=\color{StAndrewsOrange}\itshape,
+  backgroundcolor=\color{gray!5},
+  frame=single,
+  rulecolor=\color{StAndrewsBlue!30},
+  numbers=none,
+  xleftmargin=1.5em,
+  framexleftmargin=1em,
+  breaklines=true,
+  showstringspaces=false,
+  literate={~}{{\raise.25ex\hbox{$\sim$}}}1
+           {\$}{{\textcolor{StAndrewsMidGreen}{\$}}}1,
+}
+
+% Output style (for Python output, light blue border)
+\lstdefinestyle{output}{
+  language={},
+  basicstyle=\ttfamily\scriptsize,
+  keywordstyle={},
+  stringstyle={},
+  commentstyle={},
+  backgroundcolor=\color{gray!3},
+  frame=single,
+  rulecolor=\color{StAndrewsLightBlue!50},
+  numbers=none,
+  xleftmargin=0.5em,
+  framexleftmargin=0.2em,
+  breaklines=true,
+  showstringspaces=false,
+}
+
+% ============================================================================
+% ADDITIONAL PACKAGES
+% ============================================================================
+\usepackage{tcolorbox}
+
+% Custom table column types
+\newcolumntype{R}{>{\raggedright\arraybackslash}p{8cm}}
+
+% Highlight box (encouragement / key takeaways)
+\newtcolorbox{highlightbox}{
+  colback=StAndrewsLightBlue!8,
+  colframe=StAndrewsBlue!25,
+  boxrule=0.8pt,
+  arc=4pt,
+  left=6pt, right=6pt,
+  top=4pt, bottom=4pt,
+}
+
+% Demo box (live demonstration callouts)
+\newtcolorbox{demobox}[1][Live Demonstration]{
+  colback=StAndrewsBlue!5,
+  colframe=StAndrewsBlue!50,
+  boxrule=0.8pt,
+  arc=4pt,
+  left=6pt, right=6pt,
+  top=4pt, bottom=4pt,
+  fonttitle=\bfseries,
+  title=#1,
+}
+
+
+\begin{document}
+
+% ============================================================================
+% TITLE PAGE
+% ============================================================================
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+
+
+% ============================================================================
+% SECTION 0: OPENING
+% ============================================================================
+\section{Introduction}
+\subsection{Roadmap}
+
+\begin{frame}{What We Will Cover Today}
+
+This is a \alert{hands-on session}. Have your laptop open and follow along.
+
+\medskip
+
+\begin{enumerate}
+    \item \textbf{Positron} --- getting a Python session running
+    \item \textbf{Console \& Files} --- two ways to write Python
+    \item \textbf{\texttt{uv}} --- installing packages into your project
+    \item \textbf{Data Structures} --- organising financial data
+    \item \textbf{Loops} --- automating repetitive calculations
+\end{enumerate}
+
+\medskip
+
+\begin{highlightbox}
+\centering
+No programming experience required! We will go step by step.
+\end{highlightbox}
+
+\end{frame}
+
+
+\begin{frame}{Table of Contents}
+\begin{columns}[t]
+  \begin{column}{0.33\textwidth}
+    \tableofcontents[sections={1-3}]
+  \end{column}
+  \begin{column}{0.33\textwidth}
+    \tableofcontents[sections={4-6}]
+  \end{column}
+  \begin{column}{0.33\textwidth}
+    \tableofcontents[sections={7-8}]
+  \end{column}
+\end{columns}
+\end{frame}
+
+
+\subsection{Motivation}
+\begin{frame}{Why Python?}
+
+\bi
+    \item Used virtually everywhere
+    \item Free and open source (unlike Stata, EViews or Bloomberg Terminal)
+    \item Huge ecosystem of tools for data, statistics, and visualisation
+    \item The most-requested programming skill in finance job postings
+    \item You do \textbf{not} need to be a ``programmer'' --- think of it as a very powerful calculator
+    \item With AI tools like GitHub Copilot, writing code is easier than ever
+\ei
+
+\end{frame}
+
+
+\subsection{Setup Recap}
+\begin{frame}{Recap: What You Already Set Up}
+
+In the \alert{Python Setup Guide} you installed:
+
+\medskip
+
+\begin{tabular}{@{}lp{10cm}@{}}
+\toprule
+\textbf{Tool} & \textbf{What it does} \\
+\midrule
+\texttt{uv} & Manages Python and packages \\[0.5em]
+Positron & Your code editor (like Word, but for code) \\[0.5em]
+GitHub Copilot & AI assistant that helps you write code \\
+\bottomrule
+\end{tabular}
+
+\bigskip
+
+\begin{highlightbox}
+\centering
+Today we will learn \textbf{what} these tools actually do and \textbf{how} to use them for finance.
+\end{highlightbox}
+
+\end{frame}
+
+
+% ============================================================================
+% GETTING STARTED IN POSITRON
+% ============================================================================
+\section{Getting Started with Positron}
+\subsection{Create a Project Folder}
+
+\begin{frame}{Getting Started in Positron}
+\framesubtitle{Step 1: Create an empty folder for your course (e.g.\ FI5699 in Documents)}
+
+\vspace{-0.8em}
+\begin{center}
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{w2-1-folder.png}
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}{Getting Started in Positron}
+\framesubtitle{Step 2: Open Positron and click the Open button}
+
+\vspace{-0.8em}
+\begin{center}
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{w2-2-positron.png}
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}{Getting Started in Positron}
+\framesubtitle{Step 3: Navigate to your folder and click Open}
+
+\vspace{-0.8em}
+\begin{center}
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{w2-3-positron-open.png}
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}{Getting Started in Positron}
+\framesubtitle{Step 4: Your folder is now open --- you'll see the Welcome tab and sidebar}
+
+\vspace{-0.8em}
+\begin{center}
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{w2-4-positron-folder.png}
+\end{center}
+
+\end{frame}
+
+
+\subsection{Create a Virtual Environment}
+\begin{frame}{Getting Started in Positron}
+\framesubtitle{Step 5: In the terminal, type \texttt{uv venv --python 3.10} and press Enter}
+
+\vspace{-0.8em}
+\begin{center}
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{w2-5-positron-uv.png}
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}{Getting Started in Positron}
+\framesubtitle{Step 6: Positron detects the new environment --- click Yes}
+
+\vspace{-0.8em}
+\begin{center}
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{w2-6-positron-uv-yes.png}
+\end{center}
+
+\end{frame}
+
+
+\subsection{Start a Python Session}
+\begin{frame}{Getting Started in Positron}
+\framesubtitle{Step 7: A Python interpreter appears in the top-right toolbar --- click on it}
+
+\vspace{-0.8em}
+\begin{center}
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{w2-7-positron-session.png}
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}{Getting Started in Positron}
+\framesubtitle{Step 8: Choose New Interpreter Session}
+
+\vspace{-0.8em}
+\begin{center}
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{w2-8-positron-session.png}
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}{Getting Started in Positron}
+\framesubtitle{Step 9: Select the one for your project --- e.g.\ Python 3.10.11 (Uv: FI5699)}
+
+\vspace{-0.8em}
+\begin{center}
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{w2-9-positron-session.png}
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}{Getting Started in Positron}
+\framesubtitle{Step 10: You should see the Python Console with the \texttt{>>>} prompt --- you're ready!}
+
+\vspace{-0.8em}
+\begin{center}
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{w2-10-positron-session-go.png}
+\end{center}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 1: THE PYTHON CONSOLE
+% ============================================================================
+\section{The Python Console}
+\subsection{What It Is}
+
+\begin{frame}{The Python Console}
+
+You just opened the Python Console in Positron (Step 10). Let's understand what it is.
+
+\bigskip
+
+\begin{columns}[T]
+\begin{column}{0.55\textwidth}
+\bi
+    \item The \alert{Console} is where you type Python and get instant results
+    \item The \texttt{>>>} prompt means Python is waiting for your input
+    \item Type something, press Enter, see the answer
+    \item Think of it as a very powerful calculator
+    \item Positron also has a \alert{Terminal} tab --- that's for system commands (installing packages, etc.)
+\ei
+\end{column}
+\begin{column}{0.42\textwidth}
+\centering
+\begin{tikzpicture}[node distance=0.8cm, >=stealth, thick,
+  box/.style={rectangle, rounded corners=3pt, minimum width=3cm,
+              minimum height=0.7cm, align=center, font=\scriptsize}]
+  \node[box, draw=StAndrewsBlue!40, fill=StAndrewsBlue!8] (you)
+    {You type\\[-1pt]\texttt{2 + 2}};
+  \node[box, below=of you, fill=StAndrewsBlue, text=white] (console)
+    {Python\\[-1pt]Console};
+  \node[box, below=of console, draw=StAndrewsBlue!40, fill=StAndrewsBlue!8] (result)
+    {Python replies\\[-1pt]\texttt{4}};
+  \draw[->, StAndrewsBlue, line width=0.8pt] (you) -- (console);
+  \draw[->, StAndrewsBlue, line width=0.8pt] (console) -- (result);
+\end{tikzpicture}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+
+\subsection{Console vs Terminal}
+\begin{frame}{Console vs Terminal}
+
+Positron has \textbf{two} tabs at the bottom. Make sure you're in the right one:
+
+\bigskip
+
+\begin{tabular}{@{}lll@{}}
+\toprule
+ & \textbf{Console} & \textbf{Terminal} \\
+\midrule
+\textbf{Prompt} & \texttt{>>>} & \texttt{\$} (Mac/Linux) or \texttt{PS>} (Windows) \\[0.5em]
+\textbf{Language} & Python & Shell (system commands) \\[0.5em]
+\textbf{Use for} & Running Python code & Installing packages, file management \\[0.5em]
+\textbf{Example} & \texttt{2 + 2} $\to$ \texttt{4} & \texttt{uv add polars} \\
+\bottomrule
+\end{tabular}
+
+\bigskip
+
+\begin{highlightbox}
+\centering
+For this session, we will mostly use the \textbf{Console} tab.
+\end{highlightbox}
+
+\end{frame}
+
+
+\subsection{Core Syntax}
+\begin{frame}[fragile]{Python as a Calculator}
+
+In the Console, try typing these expressions:
+
+\begin{lstlisting}[style=shell]
+>>> 2 + 2
+4
+>>> 100 * 1.05    # 5% return on 100
+105.0
+>>> 175000 / 12   # monthly salary
+14583.333333333334
+\end{lstlisting}
+
+\medskip
+
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Operator} & \textbf{Meaning} & \textbf{Example} \\
+\midrule
+\texttt{+} & Add & \texttt{100 + 50} $\to$ \texttt{150} \\
+\texttt{-} & Subtract & \texttt{100 - 30} $\to$ \texttt{70} \\
+\texttt{*} & Multiply & \texttt{50 * 3} $\to$ \texttt{150} \\
+\texttt{/} & Divide & \texttt{100 / 3} $\to$ \texttt{33.33\ldots} \\
+\texttt{**} & Power & \texttt{1.07 ** 10} $\to$ \texttt{1.967\ldots} \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+\subsection{Variables and Output}
+\begin{frame}[fragile]{Storing Values with Variables}
+
+Instead of retyping numbers, give them names:
+
+\begin{lstlisting}
+>>> price = 142.50
+>>> shares = 100
+>>> position = price * shares
+>>> position
+14250.0
+\end{lstlisting}
+
+\medskip
+
+\bi
+    \item A \alert{variable} is a name that stores a value
+    \item Use \texttt{=} to assign: the name goes on the left, the value on the right
+    \item Python remembers it for the rest of your session
+    \item You can use variables in calculations, just like in a spreadsheet formula
+\ei
+
+\end{frame}
+
+
+\begin{frame}[fragile]{Displaying Results with \texttt{print()}}
+
+The console shows the result of the last expression automatically. But to display something explicitly, use \py{print()}:
+
+\begin{lstlisting}
+>>> ticker = "AAPL"
+>>> price = 142.50
+>>> shares = 100
+>>> print(ticker)
+AAPL
+>>> print(f"Position value: ${price * shares:,.2f}")
+Position value: $14,250.00
+\end{lstlisting}
+
+\medskip
+
+\bi
+    \item \py{print()} displays whatever you put inside the brackets
+    \item An \alert{f-string} (note the \texttt{f} before the quotes) lets you embed variables inside text
+    \item \texttt{:,.2f} is optional formatting: commas and 2 decimal places
+\ei
+
+\end{frame}
+
+
+\begin{frame}{Helpful Console Tips}
+
+\begin{tabular}{@{}lp{9cm}@{}}
+\toprule
+\textbf{Shortcut} & \textbf{What it does} \\
+\midrule
+\textbf{Up arrow} (\textuparrow) & Recall previous commands --- saves retyping \\[0.5em]
+\textbf{Tab} & Autocomplete a variable or function name \\[0.5em]
+\textbf{Ctrl + C} & Cancel a running command if something goes wrong \\[0.5em]
+\py{type(x)} & Find out what kind of value \texttt{x} is (number, text, etc.) \\[0.5em]
+\py{help(x)} & Get documentation for any function \\
+\bottomrule
+\end{tabular}
+
+\bigskip
+
+\begin{highlightbox}
+\centering
+You don't need to memorise these. Just remember: \textbf{up arrow} to get back what you just typed.
+\end{highlightbox}
+
+\end{frame}
+
+
+\subsection{Exercises}
+\begin{frame}[fragile]{Exercise 1: Explore the Console}
+
+\begin{alertblock}{Try It Yourself (3 minutes)}
+\begin{enumerate}
+    \item In the Positron \textbf{Console}, compute \texttt{1.07 ** 10} --- what is 7\% compounded over 10 years?
+    \item Create a variable \texttt{salary = 175000} and compute the monthly amount (\texttt{salary / 12})
+    \item Try \texttt{print(f"Monthly: \${salary / 12:,.2f}")}
+    \item Use the \textbf{up arrow} to recall and re-run a previous command
+\end{enumerate}
+\end{alertblock}
+
+\medskip
+
+\begin{highlightbox}
+\centering
+Stuck? Raise your hand. There are no silly questions here.
+\end{highlightbox}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 1b: PYTHON FILES (.py)
+% ============================================================================
+\section{Python Files (\texttt{.py})}
+\subsection{Create a File}
+
+\begin{frame}{Python Files (\texttt{.py})}
+\framesubtitle{So far we've typed in the Console. Let's save code in a file instead.}
+
+\vspace{-0.8em}
+\begin{center}
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{w2-11-python-file.png}
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}{Python Files (\texttt{.py})}
+\framesubtitle{Step 1: Click the New button (top-left) and choose New File\ldots}
+
+\vspace{-0.8em}
+\begin{center}
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{w2-12-python-file.png}
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}{Python Files (\texttt{.py})}
+\framesubtitle{Step 2: Select Python File from the list}
+
+\vspace{-0.8em}
+\begin{center}
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{w2-13-python-file.png}
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}{Python Files (\texttt{.py})}
+\framesubtitle{Step 3: A new empty file opens in the editor --- this is where you write your code}
+
+\vspace{-0.8em}
+\begin{center}
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{w2-14-python-file.png}
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}{Python Files (\texttt{.py})}
+\framesubtitle{Step 4: Type your code and save with Cmd+S / Ctrl+S --- give it a \texttt{.py} name}
+
+\vspace{-0.8em}
+\begin{center}
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{w2-15-python-file.png}
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}{Python Files (\texttt{.py})}
+\framesubtitle{Step 5: Click the play button ($\blacktriangleright$) to run --- output appears in the Console below}
+
+\vspace{-0.8em}
+\begin{center}
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{w2-16-python-file.png}
+\end{center}
+
+\end{frame}
+
+
+\subsection{Run Code}
+\begin{frame}{Running Code: Whole File vs Line by Line}
+
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\textbf{Run the whole file}
+\bi
+    \item Click the $\blacktriangleright$ button at the top of the editor
+    \item Runs every line from top to bottom
+    \item Best for finished scripts
+\ei
+\end{column}
+\begin{column}{0.48\textwidth}
+\textbf{Run a single line}
+\bi
+    \item Place your cursor on a line
+    \item Press \alert{Cmd+Enter} (Mac) or \alert{Ctrl+Enter} (Windows)
+    \item That line runs in the Console
+\ei
+\end{column}
+\end{columns}
+
+\bigskip
+
+\begin{highlightbox}
+\centering
+\textbf{Important:} When running line by line, Python only knows about lines you've already run. Always run lines \textbf{in order from the top} --- e.g.\ run \texttt{x = 5} before \texttt{print(x)}.
+\end{highlightbox}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 2: INSTALLING PACKAGES WITH UV
+% ============================================================================
+\section{Installing Packages with \texttt{uv}}
+\subsection{Initialize a Project}
+
+\begin{frame}[fragile]{Setting Up Your Project}
+
+You already have a folder open in Positron with a virtual environment. Now let's turn it into a proper \alert{project} so we can install packages.
+
+\bigskip
+
+In the \textbf{Terminal} tab (not the Console), type:
+
+\begin{lstlisting}[style=shell]
+$ uv init
+\end{lstlisting}
+
+\medskip
+
+This creates two files in your folder:
+
+\medskip
+
+\begin{tabular}{@{}lp{8cm}@{}}
+\toprule
+\textbf{File} & \textbf{What it does} \\
+\midrule
+\texttt{pyproject.toml} & The recipe --- lists which packages your project needs \\[0.3em]
+\texttt{uv.lock} & The exact versions --- so your code works the same way every time \\
+\bottomrule
+\end{tabular}
+
+\bigskip
+
+Think of \texttt{pyproject.toml} like a shopping list. You're about to add items to it.
+
+\end{frame}
+
+
+\subsection{Add Your Toolkit}
+\begin{frame}[fragile]{Your Dissertation Toolkit}
+
+These are the packages we'll use throughout the module:
+
+\medskip
+
+\begin{tabular}{@{}llp{5cm}@{}}
+\toprule
+\textbf{Package} & \textbf{What it does} & \textbf{Think of it as\ldots} \\
+\midrule
+\texttt{polars} & Work with tables of data & A supercharged spreadsheet \\[0.3em]
+\texttt{plotnine} & Create charts and plots & Excel charts, but better \\[0.3em]
+\texttt{pyfixest} & Run regressions & Stata's \texttt{reghdfe}, in Python \\[0.3em]
+\texttt{diff-diff} & Difference-in-differences & Causal inference toolkit \\
+\bottomrule
+\end{tabular}
+
+\bigskip
+
+Install them all in one go (in the \textbf{Terminal} tab):
+
+\begin{lstlisting}[style=shell]
+$ uv add polars plotnine pyfixest diff-diff
+\end{lstlisting}
+
+\end{frame}
+
+
+\subsection{Virtual Environments}
+\begin{frame}[fragile]{What Is a Virtual Environment?}
+
+\begin{columns}[T]
+\begin{column}{0.55\textwidth}
+When you ran \texttt{uv venv} earlier, it created a \texttt{.venv} folder inside your project.
+
+\medskip
+
+\bi
+    \item This is your project's \alert{private toolbox}
+    \item Packages you install go here, not on your whole computer
+    \item Different projects can use different packages (or different versions) without clashing
+    \item Positron already knows about it (you selected it in step 9)
+\ei
+\end{column}
+\begin{column}{0.42\textwidth}
+\centering
+\begin{tikzpicture}[node distance=0.6cm, >=stealth, thick,
+  box/.style={rectangle, rounded corners=3pt, minimum width=3.2cm,
+              minimum height=0.6cm, align=center, font=\scriptsize}]
+  \node[box, fill=StAndrewsBlue, text=white] (proj)
+    {FI5699/ (your folder)};
+  \node[box, below=of proj, draw=StAndrewsBlue!40, fill=StAndrewsBlue!8] (venv)
+    {\texttt{.venv/} (private toolbox)};
+  \node[box, below=0.4cm of venv, draw=StAndrewsMidBlue!40, fill=StAndrewsMidBlue!8, font=\tiny] (p1)
+    {polars};
+  \node[box, below=0.2cm of p1, draw=StAndrewsMidBlue!40, fill=StAndrewsMidBlue!8, font=\tiny] (p2)
+    {plotnine};
+  \node[box, below=0.2cm of p2, draw=StAndrewsMidBlue!40, fill=StAndrewsMidBlue!8, font=\tiny] (p3)
+    {pyfixest, diff-diff, \ldots};
+  \draw[->, StAndrewsBlue, line width=0.8pt] (proj) -- (venv);
+  \draw[StAndrewsMidBlue!50, line width=0.5pt] (venv.south) -- (p1.north);
+\end{tikzpicture}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+
+\subsection{Common Errors}
+\begin{frame}[fragile]{What Happens If You Forget \texttt{uv add}?}
+
+If you try to use a package you haven't installed:
+
+\begin{lstlisting}
+>>> import polars as pl
+\end{lstlisting}
+
+\begin{lstlisting}[style=output]
+ModuleNotFoundError: No module named 'polars'
+\end{lstlisting}
+
+\medskip
+
+This is Python telling you: \textit{``I don't have that tool in my toolbox.''}
+
+\bigskip
+
+\textbf{The fix is always the same} --- go to the \textbf{Terminal} tab and run:
+
+\begin{lstlisting}[style=shell]
+$ uv add polars
+\end{lstlisting}
+
+Then try the import again in the Console. It will work.
+
+\bigskip
+
+\begin{highlightbox}
+\centering
+\texttt{ModuleNotFoundError} = you need to \texttt{uv add} the package first.
+\end{highlightbox}
+
+\end{frame}
+
+
+\begin{frame}[fragile]{Try It: Import and Use \texttt{polars}}
+
+After running \texttt{uv add polars}, switch to the \textbf{Console} and type:
+
+\begin{lstlisting}
+>>> import polars as pl
+>>> df = pl.DataFrame({
+...     "ticker": ["AAPL", "MSFT", "TSLA"],
+...     "price":  [142.50, 378.90, 248.50],
+... })
+>>> print(df)
+\end{lstlisting}
+
+\begin{lstlisting}[style=output]
+shape: (3, 2)
++--------+-------+
+| ticker | price |
+| ---    | ---   |
+| str    | f64   |
++========+=======+
+| AAPL   | 142.5 |
+| MSFT   | 378.9 |
+| TSLA   | 248.5 |
++--------+-------+
+\end{lstlisting}
+
+You just created a table of data in Python. Don't worry about the \texttt{\{~\}} and \texttt{[~]} syntax --- we'll cover those after the break.
+
+\end{frame}
+
+
+\begin{frame}[fragile]{The Three \texttt{uv} Commands You Need}
+
+\begin{tabular}{@{}lp{7.5cm}@{}}
+\toprule
+\textbf{What you want to do} & \textbf{Command (in the Terminal tab)} \\
+\midrule
+Set up a new project & \texttt{uv init} \\[0.5em]
+Install a package & \texttt{uv add polars} \\[0.5em]
+See what's installed & \texttt{uv pip list} \\
+\bottomrule
+\end{tabular}
+
+\bigskip
+
+That's it. Three commands. Everything else is just Python.
+
+\bigskip
+
+\begin{highlightbox}
+\centering
+\textbf{The pattern:} \texttt{uv add \ldots} in the Terminal, then \texttt{import \ldots} in the Console (or your \texttt{.py} file).
+\end{highlightbox}
+
+\end{frame}
+
+
+\subsection{Exercises}
+\begin{frame}[fragile]{Exercise 2: Install and Import}
+
+\begin{alertblock}{Try It Yourself (3 minutes)}
+\begin{enumerate}
+    \item In the \textbf{Terminal} tab, run: \texttt{uv add polars plotnine pyfixest diff-diff}
+    \item Watch it install --- it should only take a few seconds
+    \item In the \textbf{Console}, type: \texttt{import polars as pl}
+    \item Then type: \texttt{print(pl.\_\_version\_\_)} --- you should see a version number
+    \item Open \texttt{pyproject.toml} in the editor --- find where \texttt{polars} appears
+\end{enumerate}
+\end{alertblock}
+
+\medskip
+
+\begin{highlightbox}
+\centering
+If you see \texttt{ModuleNotFoundError}, check: are you in the \textbf{Console} (not Terminal)? Did \texttt{uv add} finish?
+\end{highlightbox}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 3: DATA STRUCTURES
+% ============================================================================
+\section{Data Structures}
+\subsection{Why It Matters}
+
+\begin{frame}{Why Data Structures Matter}
+
+Later in the module, \texttt{polars} will handle your actual datasets (tables of stock prices, returns, etc.). So why learn lists and dictionaries?
+
+\bigskip
+
+Because they are the \alert{building blocks} that show up \textbf{everywhere} in Python:
+
+\medskip
+
+\begin{tabular}{@{}lp{7.5cm}@{}}
+\toprule
+\textbf{Situation} & \textbf{Example} \\
+\midrule
+Passing options to a function & \texttt{yf.download(["AAPL", "MSFT"], \ldots)} \\[0.3em]
+Storing settings or parameters & \texttt{\{"start": "2024-01-01", "end": "2024-12-31"\}} \\[0.3em]
+Collecting results in a loop & \texttt{rows.append(\{"ticker": t, "return": r\})} \\[0.3em]
+Organising any small group of values & \texttt{rates = [0.05, 0.07, 0.10]} \\
+\bottomrule
+\end{tabular}
+
+\bigskip
+
+\begin{highlightbox}
+\centering
+Think of lists and dictionaries as Python's \textbf{plumbing} --- you won't store large datasets in them, but you can't write a useful program without them.
+\end{highlightbox}
+
+\end{frame}
+
+
+\subsection{Variables and Types}
+\begin{frame}[fragile]{Variables: Giving Names to Values}
+
+\begin{lstlisting}
+price = 142.50          # a decimal number
+shares = 100            # a whole number
+ticker = "AAPL"         # text (always in quotes)
+is_profitable = True    # yes or no (True / False)
+
+print(f"Ticker: {ticker}")
+print(f"Price:  {price}")
+print(f"Value:  {price * shares}")
+\end{lstlisting}
+
+\begin{lstlisting}[style=output]
+Ticker: AAPL
+Price:  142.5
+Value:  14250.0
+\end{lstlisting}
+
+\begin{highlightbox}
+\centering
+A variable is just a \textbf{name tag} you stick on a value. Python figures out the type automatically.
+\end{highlightbox}
+
+\end{frame}
+
+
+\subsection{Lists}
+\begin{frame}[fragile]{Lists: Ordered Collections}
+
+\begin{lstlisting}
+# A portfolio of stock tickers
+portfolio = ["AAPL", "MSFT", "TSLA", "AMZN"]
+
+print(portfolio[0])     # first item  (counting starts at 0!)
+print(portfolio[-1])    # last item
+print(len(portfolio))   # how many items
+\end{lstlisting}
+
+\begin{lstlisting}[style=output]
+'AAPL'
+'AMZN'
+4
+\end{lstlisting}
+
+\bi
+    \item Created with square brackets \texttt{[~]}
+    \item Items have a fixed \alert{order} (first, second, third\ldots)
+    \item Counting starts at \textbf{0}, not 1 (this trips everyone up at first!)
+\ei
+
+\end{frame}
+
+
+\begin{frame}[fragile]{Useful Things You Can Do with Lists}
+
+\begin{lstlisting}
+portfolio = ["AAPL", "MSFT"]
+portfolio.append("GOOGL")       # add to the end
+portfolio.remove("MSFT")        # remove by name
+print(portfolio)                # ['AAPL', 'GOOGL']
+
+returns = [0.5, -1.2, 0.8, 2.1, -0.3]
+print(sum(returns))      # total:  1.9
+print(max(returns))      # best:   2.1
+print(min(returns))      # worst: -1.2
+print(len(returns))      # count:  5
+\end{lstlisting}
+
+\medskip
+
+Built-in functions like \py{sum()}, \py{max()}, \py{min()}, and \py{len()} work directly on lists.
+
+\end{frame}
+
+
+\begin{frame}{Visualising Those Returns}
+
+\begin{center}
+\includegraphics[width=0.8\textwidth]{returns_bar.pdf}
+\end{center}
+
+\centering
+Blue bars = positive days. Red bars = negative days. (We'll learn to make charts like this next week with \texttt{plotnine}.)
+
+\end{frame}
+
+
+\subsection{Dictionaries}
+\begin{frame}[fragile]{Dictionaries: Labelled Data}
+
+\begin{lstlisting}
+# Stock info as a dictionary
+stock = {
+    "ticker": "AAPL",
+    "price": 142.50,
+    "shares": 100,
+    "sector": "Technology",
+}
+
+print(stock["price"])          # look up by name
+stock["price"] = 145.00        # update a value
+print(stock["price"])
+\end{lstlisting}
+
+\bi
+    \item Created with curly braces \texttt{\{~\}}
+    \item Each entry has a \alert{name} (key) and a \alert{value}
+    \item Like a row in a spreadsheet where each column has a header
+\ei
+
+\end{frame}
+
+
+\begin{frame}{Lists vs Dictionaries}
+
+\begin{tabular}{@{}lp{4.5cm}p{5.5cm}@{}}
+\toprule
+ & \textbf{List} & \textbf{Dictionary} \\
+\midrule
+\textbf{Looks like} & \texttt{["AAPL", "MSFT"]} & \texttt{\{"ticker": "AAPL", "price": 142\}} \\[0.5em]
+\textbf{Access by} & Position (number) & Name (key) \\[0.5em]
+\textbf{Best for} & Sequences of similar items & A record with named fields \\[0.5em]
+\textbf{Analogy} & A column in Excel & A row in Excel \\
+\bottomrule
+\end{tabular}
+
+\bigskip
+
+For this course, these two are the ones you'll use most. We'll mention \textbf{tuples} \texttt{(1, 2, 3)} and \textbf{sets} \texttt{\{1, 2, 3\}} as we go, but don't worry about them now.
+
+\end{frame}
+
+
+\subsection{Putting It Together}
+\begin{frame}[fragile]{Live: Building a Portfolio}
+
+\begin{demobox}
+Create a dictionary of stock positions and compute values.
+\end{demobox}
+
+\begin{lstlisting}
+portfolio = {
+    "AAPL": {"shares": 50, "price": 142.50},
+    "MSFT": {"shares": 30, "price": 378.90},
+}
+
+# Total value of the Apple position
+aapl_value = (portfolio["AAPL"]["shares"]
+              * portfolio["AAPL"]["price"])
+print(f"AAPL position value: ${aapl_value:,.2f}")
+\end{lstlisting}
+
+\begin{lstlisting}[style=output]
+AAPL position value: $7,125.00
+\end{lstlisting}
+
+\end{frame}
+
+
+\subsection{Exercises}
+\begin{frame}[fragile]{Exercise 3: Data Structures}
+
+\begin{alertblock}{Try It Yourself (5 minutes)}
+\begin{enumerate}
+    \item Create a \textbf{list} of 5 stock tickers you know (e.g.\ \texttt{["AAPL", "TSLA", \ldots]})
+    \item Print the first and last ticker
+    \item Create a \textbf{dictionary} for one stock with keys \texttt{"ticker"}, \texttt{"price"}, \texttt{"shares"}
+    \item Print the total value (price $\times$ shares)
+\end{enumerate}
+\end{alertblock}
+
+\medskip
+
+\textbf{Hint:} Create a new Python file \texttt{exercise3.py} (New $\to$ New File $\to$ Python File), write your code, and click $\blacktriangleright$ to run it.
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 4: LOOPS
+% ============================================================================
+\section{Loops}
+\subsection{Motivation}
+
+\begin{frame}{Why Do We Need Loops?}
+
+\begin{columns}[T]
+\begin{column}{0.52\textwidth}
+Computing the return for \textbf{1 stock} is easy:
+
+\medskip
+
+\texttt{value = 100 * 142.50}
+
+\medskip
+
+But what about \textbf{500 stocks}?
+
+\medskip
+
+A \alert{loop} says: \textit{``do this for \textbf{each} item in a list''}
+
+\medskip
+
+It's like dragging a formula down a column in Excel --- but more powerful.
+\end{column}
+\begin{column}{0.45\textwidth}
+\centering
+\begin{tikzpicture}[node distance=1cm, >=stealth, thick,
+  box/.style={rectangle, rounded corners=3pt, minimum width=2.8cm,
+              minimum height=0.7cm, align=center, font=\scriptsize},
+  decision/.style={diamond, aspect=2, minimum width=2cm,
+                   align=center, font=\scriptsize}]
+  \node[box, fill=StAndrewsBlue, text=white] (start)
+    {Start: list of\\[-1pt]tickers};
+  \node[decision, below=of start, draw=StAndrewsMidBlue,
+        fill=StAndrewsMidBlue!15] (check)
+    {More\\tickers?};
+  \node[box, right=1.8cm of check, fill=StAndrewsMidBlue, text=white] (process)
+    {Process\\[-1pt]next ticker};
+  \node[box, below=1.2cm of check, fill=StAndrewsGreen, text=white] (done)
+    {Done!};
+  \draw[->, line width=0.8pt] (start) -- (check);
+  \draw[->, line width=0.8pt] (check) -- node[above, font=\tiny] {Yes} (process);
+  \draw[->, line width=0.8pt] (check) -- node[right, font=\tiny] {No} (done);
+  \draw[->, line width=0.8pt, rounded corners=3pt]
+    (process.north) -- ++(0,0.5) -| (check);
+\end{tikzpicture}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+
+\subsection{\texttt{for} Loops}
+\begin{frame}[fragile]{Your First \texttt{for} Loop}
+
+\begin{lstlisting}
+tickers = ["AAPL", "MSFT", "TSLA", "AMZN"]
+
+for ticker in tickers:
+    print(f"Analysing {ticker}...")
+\end{lstlisting}
+
+\medskip
+
+\lstinputlisting[style=output]{outputs/for_loop.txt}
+
+\medskip
+
+\begin{highlightbox}
+\centering
+\textbf{How to read it:} ``For each ticker in the list, print a message.''\\
+The indented line (4 spaces) is what repeats. Everything else runs once.
+\end{highlightbox}
+
+\end{frame}
+
+
+\subsection{Counting with \texttt{range()}}
+\begin{frame}[fragile]{\texttt{range()}: Counting by Numbers}
+
+\begin{lstlisting}
+# Compound interest: 10 years at 5%
+value = 1000
+for year in range(1, 11):
+    value = value * 1.05
+    print(f"Year {year:2d}: ${value:>10,.2f}")
+\end{lstlisting}
+
+\medskip
+
+\lstinputlisting[style=output]{outputs/compound.txt}
+
+\medskip
+
+\bi
+    \item \py{range(5)} gives you 0, 1, 2, 3, 4
+    \item \py{range(1, 11)} gives you 1, 2, 3, \ldots, 10
+    \item Useful for simulating time periods
+\ei
+
+\end{frame}
+
+
+\subsection{Looping with Indexes}
+\begin{frame}[fragile]{Loops with Calculations}
+
+\begin{lstlisting}
+prices = [142.50, 378.90, 248.50, 186.75]
+shares = [50, 30, 20, 40]
+
+total = 0
+for i in range(len(prices)):
+    position = prices[i] * shares[i]
+    total += position              # shorthand for total = total + position
+    print(f"Position {i+1}: ${position:,.2f}")
+
+print(f"\nPortfolio value: ${total:,.2f}")
+\end{lstlisting}
+
+\medskip
+
+\lstinputlisting[style=output]{outputs/portfolio_loop.txt}
+
+\end{frame}
+
+
+\begin{frame}{Compound Interest: Visualised}
+
+\begin{center}
+\includegraphics[width=\textwidth]{compound_growth.pdf}
+\end{center}
+
+\smallskip
+
+Same starting amount, different rates. Small differences compound into huge gaps over time.
+
+\end{frame}
+
+
+\subsection{Nested Loops}
+\begin{frame}[fragile]{The Code Behind That Chart}
+
+\begin{lstlisting}
+principal = 10000
+rates = {"5%": 0.05, "7%": 0.07, "10%": 0.10}
+
+rows = []
+for label, rate in rates.items():      # .items() gives each key-value pair
+    value = principal
+    for year in range(0, 21):           #   for each year...
+        rows.append({"rate": label,
+                     "year": year,
+                     "value": value})
+        value = value * (1 + rate)      #   grow by the rate
+
+# This is a nested loop: a loop inside a loop!
+\end{lstlisting}
+
+\medskip
+
+Two loops working together: the outer loop picks a rate, the inner loop simulates 20 years.
+
+\end{frame}
+
+
+\subsection{\texttt{while} Loops}
+\begin{frame}[fragile]{\texttt{while} Loops: Repeat Until a Condition}
+
+\begin{lstlisting}
+# How many years to double your money at 7%?
+value = 1000
+target = 2000
+years = 0
+
+while value < target:
+    value = value * 1.07
+    years += 1                # add 1 to years
+
+print(f"It takes {years} years to double at 7%")
+\end{lstlisting}
+
+\begin{lstlisting}[style=output]
+It takes 11 years to double at 7%
+\end{lstlisting}
+
+\begin{highlightbox}
+\centering
+Use \texttt{for} when you know how many times to repeat. Use \texttt{while} when you want to keep going \textbf{until} something happens.
+\end{highlightbox}
+
+\end{frame}
+
+
+\subsection{Combining with Data Structures}
+\begin{frame}[fragile]{Combining Loops and Data Structures}
+
+\begin{columns}[T]
+\begin{column}{0.52\textwidth}
+\begin{lstlisting}[basicstyle=\ttfamily\scriptsize]
+portfolio = {
+    "AAPL": {"shares": 50,
+             "price": 142.50},
+    "MSFT": {"shares": 30,
+             "price": 378.90},
+    "TSLA": {"shares": 20,
+             "price": 248.50},
+}
+
+total = 0
+for ticker, info in portfolio.items():  # each key + value
+    value = info["shares"] * info["price"]
+    total += value
+    print(f"{ticker}: ${value:,.2f}")
+
+print(f"\nTotal: ${total:,.2f}")
+\end{lstlisting}
+\end{column}
+\begin{column}{0.45\textwidth}
+\centering
+\includegraphics[width=\textwidth]{portfolio_bar.pdf}
+
+\bigskip
+
+{\small Loop over structured data to compute everything at once.}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+
+\subsection{Exercises}
+\begin{frame}[fragile]{Exercise 4: Loops}
+
+\begin{alertblock}{Try It Yourself (5 minutes)}
+\begin{enumerate}
+    \item Write a \py{for} loop that prints each ticker in your list from Exercise 3
+    \item Compound returns exercise:
+    \begin{itemize}
+        \item Start with \texttt{value = 1.0}
+        \item For each return in \texttt{[0.05, -0.02, 0.03, 0.01, -0.01]}, do: \texttt{value = value * (1 + r)}
+        \item Print the final value
+    \end{itemize}
+    \item \textbf{Bonus:} Use a \py{while} loop to find how many years \$5,000 takes to reach \$10,000 at 6\%
+\end{enumerate}
+\end{alertblock}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 5: SUMMARY
+% ============================================================================
+\section{Summary}
+\subsection{Key Takeaways}
+
+\begin{frame}{What You Learned Today}
+
+\begin{columns}[T]
+\begin{column}{0.48\textwidth}
+\textbf{Tools \& setup}
+\begin{itemize}
+    \item Positron: Console vs Terminal vs Editor
+    \item Python files (\texttt{.py}) and how to run them
+    \item \texttt{uv init} / \texttt{uv add} for packages
+    \item Virtual environments (your project's private toolbox)
+\end{itemize}
+\end{column}
+\begin{column}{0.48\textwidth}
+\textbf{Python fundamentals}
+\begin{itemize}
+    \item Variables and types (\py{int}, \py{float}, \py{str}, \py{bool})
+    \item Lists \texttt{[~]} and dictionaries \texttt{\{~\}}
+    \item \py{for} loops and \py{while} loops
+    \item \py{range()} for counting
+    \item Combining data structures with loops
+\end{itemize}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+
+\subsection{Self-Check}
+\begin{frame}[fragile]{Quick Self-Check}
+
+\textbf{Can you answer these in your own words?}
+
+\be
+    \item What is the difference between the Console and the Terminal in Positron?
+    \item What does \texttt{uv add polars} do, and where do you run it?
+    \item What is the difference between a list and a dictionary?
+    \item What does \py{for ticker in portfolio:} do?
+    \item When would you use \py{while} instead of \py{for}?
+\ee
+
+\end{frame}
+
+
+\subsection{Next Steps}
+\begin{frame}{What's Next}
+
+\bi
+    \item Week 4: \alert{real financial data} with \texttt{polars} and \texttt{plotnine}
+    \begin{itemize}
+        \item Downloading stock prices, filtering tables, computing returns, making charts
+    \end{itemize}
+    \item \textbf{Homework:} complete today's exercises and experiment in the Console
+    \item Resources:
+    \begin{itemize}
+        \item Python tutorial: \url{https://docs.python.org/3/tutorial/}
+        \item \texttt{uv} docs: \url{https://docs.astral.sh/uv/}
+        \item polars guide: \url{https://docs.pola.rs/}
+        \item plotnine docs: \url{https://plotnine.org/}
+    \end{itemize}
+\ei
+
+\medskip
+
+\begin{highlightbox}
+\centering
+If something breaks: read the error message, restart your terminal, try again.\\
+Still stuck? Email me at \href{mailto:ce50@st-andrews.ac.uk}{ce50@st-andrews.ac.uk}.
+\end{highlightbox}
+
+\end{frame}
+
+
+\end{document}

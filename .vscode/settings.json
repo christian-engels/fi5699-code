@@ -1,0 +1,19 @@
+{
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "notebook.defaultFormatter": "ms-python.black-formatter",
+  "notebook.formatOnSave.enabled": true,
+  "notebook.formatOnCellExecution": true,
+  "jupyter.interactiveWindow.textEditor.executeSelection": true,
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
+  "github.copilot.enable": {
+    "*": true,
+    "python": false,
+    "markdown": false
+  },
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true
+  }
+}

@@ -1,0 +1,371 @@
+\documentclass[9pt,aspectratio=169]{beamer}
+\usetheme{StAndrews}
+
+\coursename{FI5699 Dissertation Module}
+
+\title{\LARGE \textnormal{Week 5: \\
+Key Concepts and Terms}}
+\hypersetup{pdftitle={FI5699 Week 5 -- Key Concepts and Terms}}
+
+\newcolumntype{R}{>{\raggedright\arraybackslash}p{8cm}}
+
+\begin{document}
+
+% ============================================================================
+% TITLE PAGE
+% ============================================================================
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+
+
+\begin{frame}{How to Use This Study Aid}
+
+This deck collects the \alert{key concepts and terms} from Week 5: Panel Regression Recap.
+
+\medskip
+
+\textbf{For each term you should be able to:}
+\begin{itemize}
+    \item Define it in your own words
+    \item Give an example or illustration
+    \item Explain why it matters for your dissertation workflow
+\end{itemize}
+
+\medskip
+
+Use these slides as prompts --- prepare your own definitions, answers and materials.
+
+\medskip
+
+\alert{Note:} This is a study aid only. It does not attempt to be comprehensive and should not be relied upon as sufficient preparation for assessment purposes.
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 1: PANEL DATA STRUCTURE
+% ============================================================================
+\section{Panel Data Structure}
+
+\begin{frame}{What Is Panel Data?}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{Panel data} & What are its two dimensions? How does it differ from pure cross-sectional or pure time-series data? \\[0.8em]
+\alert{Cross-section} & What does the cross-sectional dimension represent (e.g.\ firms, countries)? \\[0.8em]
+\alert{Time series} & What does the time dimension represent (e.g.\ years, months)? \\[0.8em]
+\alert{Unit--time pair} & What is a ``firm--year'' observation? Why is each row identified by two things? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+\begin{frame}{Why Panel Data Matters}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{Unobserved heterogeneity} & What are examples of things you cannot directly measure (e.g.\ firm culture, management quality)? \\[0.8em]
+\alert{Within-unit variation} & What does it mean to compare a firm ``to itself'' over time? \\[0.8em]
+\alert{Between-unit variation} & What does it mean to compare different firms to each other? Why can this be misleading? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 2: THE POOLED OLS PROBLEM
+% ============================================================================
+\section{The Pooled OLS Problem}
+
+\begin{frame}{Pooled OLS and Omitted Variable Bias}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{Pooled OLS} & What does it mean to run OLS on panel data without fixed effects? What assumption does it make? \\[0.8em]
+\alert{Omitted variable bias (OVB)} & What happens to $\hat{\beta}$ when an unobserved variable correlates with both $X$ and $Y$? \\[0.8em]
+\alert{Confounding variable} & What is a confounder? How does it create a spurious relationship between $X$ and $Y$? \\[0.8em]
+\alert{Endogeneity} & What does it mean for $X$ to be correlated with the error term $\varepsilon$? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 3: FIXED EFFECTS
+% ============================================================================
+\section{Fixed Effects}
+
+\begin{frame}{The Fixed Effects Idea}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{Fixed effect ($\alpha_i$)} & What is a unit-specific intercept? What does it absorb? \\[0.8em]
+\alert{Demeaning} & What does it mean to subtract each unit's time average? Why is this equivalent to including $\alpha_i$? \\[0.8em]
+\alert{Time-invariant} & What kinds of variables are ``absorbed'' by firm fixed effects (e.g.\ founding year, geography)? \\[0.8em]
+\alert{Singleton observation} & What happens to firms with only one observation? Why are they dropped? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+\begin{frame}{Types of Fixed Effects}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{Firm FE ($\alpha_i$)} & What time-invariant firm traits does it absorb? \\[0.8em]
+\alert{Year FE ($\delta_t$)} & What common time shocks does it absorb (e.g.\ financial crises, regulatory changes)? \\[0.8em]
+\alert{Two-way FE} & What does including both firm and year FE simultaneously control for? \\[0.8em]
+\alert{Industry $\times$ Year FE} & What does an interacted fixed effect absorb that separate FEs cannot? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+\begin{frame}{Limitations of Fixed Effects}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{No dynamics assumption} & Why does FE require that past outcomes do not cause current treatment? (Imai \& Kim 2019) \\[0.8em]
+\alert{Within variation only} & Why does $\hat{\beta}$ come only from within-unit changes, not cross-sectional differences? \\[0.8em]
+\alert{Plausible counterfactuals} & Why should you use within-unit SD (not overall SD) for effect-size claims? (Mummolo \& Peterson 2018) \\[0.8em]
+\alert{Residualizing $X$} & What does it mean to ``residualize'' $X$ with respect to your fixed effects, and why does it reveal the variation driving $\hat{\beta}$? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 4: CLUSTERED STANDARD ERRORS
+% ============================================================================
+\section{Clustered Standard Errors}
+
+\begin{frame}{Why OLS Standard Errors Fail in Panels}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{Independence assumption} & What does OLS assume about the correlation between $\varepsilon_{it}$ and $\varepsilon_{js}$? Why does this fail in panels? \\[0.8em]
+\alert{Firm effect (serial correlation)} & Why are residuals for the same firm correlated across years? \\[0.8em]
+\alert{Time effect (cross-sectional correlation)} & Why are residuals for different firms correlated within the same year? \\[0.8em]
+\alert{Over-rejection} & What happens to hypothesis tests when SEs are too small? (Petersen 2009: 15\% reject at 1\%) \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+\begin{frame}{Clustering Solutions}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{Clustered standard errors} & What assumption do they relax? How do they allow correlation within clusters? \\[0.8em]
+\alert{Cluster by firm} & When should you cluster by firm? What dependence structure does it handle? \\[0.8em]
+\alert{Cluster by time} & When should you cluster by time? When might you prefer Fama--MacBeth? \\[0.8em]
+\alert{Two-way clustering} & What does $\hat{V}_{\text{firm}} + \hat{V}_{\text{time}} - \hat{V}_{\text{White}}$ achieve? When do you need it? \\[0.8em]
+\alert{Minimum cluster count} & Why do you need at least 30--50 clusters for reliable inference? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+\begin{frame}{When to Cluster}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{Petersen's diagnostic} & How does comparing SE methods (IID, robust, firm-clustered, time-clustered) reveal the dependence structure? \\[0.8em]
+\alert{Treatment assignment level} & Why should you cluster at (or above) the level at which treatment varies? \\[0.8em]
+\alert{Over-clustering} & What do Abadie et al.\ (2023) show about unnecessary clustering destroying statistical power? \\[0.8em]
+\alert{Robust (HC1) SEs} & When might heteroskedasticity-robust SEs suffice instead of clustering? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 5: RUNNING REGRESSIONS WITH PYFIXEST
+% ============================================================================
+\section{Running Regressions with \texttt{pyfixest}}
+
+\begin{frame}{The Formula Syntax}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{\texttt{pf.feols()}} & What are its three key arguments (formula, vcov, data)? \\[0.8em]
+\alert{Formula: \texttt{y \textasciitilde{} x1 + x2}} & What does the left-hand side represent? What does \texttt{+} mean on the right? \\[0.8em]
+\alert{The \texttt{|} separator} & What goes after the pipe? How does it differ from Stata's \texttt{absorb()}? \\[0.8em]
+\alert{\texttt{vcov} argument} & What are the options: \texttt{"iid"}, \texttt{"HC1"}, \texttt{\{"CRV1": "firm"\}}, \texttt{\{"CRV1": "firm + year"\}}? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+\begin{frame}{Extracting and Comparing Results}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{\texttt{.coef()}, \texttt{.se()}, \texttt{.pvalue()}} & What does each method return from a fitted model? \\[0.8em]
+\alert{\texttt{.tidy()}} & What does it return and why is it useful for further analysis? \\[0.8em]
+\alert{\texttt{.confint()}} & What is a confidence interval and how do you extract one? \\[0.8em]
+\alert{\texttt{.vcov()} after estimation} & Why is it useful to re-compute SEs without re-running the regression? How does this implement Petersen's diagnostic? \\[0.8em]
+\alert{\texttt{csw0()}} & What does cumulative stepwise estimation do? Why run models that progressively add controls? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 6: PRESENTING RESULTS
+% ============================================================================
+\section{Presenting Results}
+
+\begin{frame}{Regression Tables}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{\texttt{pf.etable()}} & How does it display multiple models side by side? What arguments does it take? \\[0.8em]
+\alert{\texttt{labels}} & Why should you replace variable names with human-readable labels? \\[0.8em]
+\alert{\texttt{type="tex"}} & How do you export a table as \LaTeX{} for your dissertation? \\[0.8em]
+\alert{\texttt{coef\_fmt}} & How do you control what appears below the coefficient (SEs vs $t$-stats)? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+\begin{frame}{Coefficient Plots and Hypothesis Testing}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{\texttt{pf.coefplot()}} & What does a coefficient plot show? When is it more effective than a table? \\[0.8em]
+\alert{Confidence interval} & What does the interval around each coefficient represent? \\[0.8em]
+\alert{\texttt{hypotheses()} (marginaleffects)} & How do you test whether two coefficients are equal? \\[0.8em]
+\alert{Delta method} & What does it compute and why is it needed for non-linear functions of coefficients (e.g.\ ratios)? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 7: KEY PAPERS
+% ============================================================================
+\section{Key Papers}
+
+\begin{frame}{Four Papers You Should Know}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Paper} & \textbf{Key insight} \\
+\midrule
+\alert{Petersen (2009)} & Compare SE methods to diagnose the dependence structure of your data; firm effect $\to$ cluster by firm. \\[0.8em]
+\alert{Imai \& Kim (2019)} & FE assumes no dynamic feedback between treatment and outcome; violations make $\hat{\beta}$ inconsistent. \\[0.8em]
+\alert{Mummolo \& Peterson (2018)} & Use within-unit SD for counterfactuals; many published effect sizes are overstated. \\[0.8em]
+\alert{Abadie et al.\ (2023)} & Cluster at the level of treatment assignment; unnecessary clustering wastes power. \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 8: SUMMARY
+% ============================================================================
+\section{Summary Checklist}
+
+\begin{frame}{Week 5 --- Key Terms Checklist}
+
+\textbf{Can you define and give an example for each?}
+
+\medskip
+
+\begin{columns}[T]
+\begin{column}{0.33\textwidth}
+\begin{itemize}
+    \item Panel data
+    \item Cross-section / time series
+    \item Unit--time pair
+    \item Pooled OLS
+    \item Omitted variable bias
+    \item Endogeneity
+\end{itemize}
+\end{column}
+\begin{column}{0.33\textwidth}
+\begin{itemize}
+    \item Fixed effect ($\alpha_i$)
+    \item Demeaning
+    \item Firm / year / two-way FE
+    \item Industry $\times$ year FE
+    \item Singleton observation
+    \item Within-unit variation
+\end{itemize}
+\end{column}
+\begin{column}{0.33\textwidth}
+\begin{itemize}
+    \item Clustered standard errors
+    \item Two-way clustering
+    \item Petersen's diagnostic
+    \item \texttt{pf.feols()} / the \texttt{|} separator
+    \item \texttt{pf.etable()} / \texttt{pf.coefplot()}
+    \item Delta method
+\end{itemize}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+
+\begin{frame}{Week 5 --- Key Questions}
+
+\textbf{Can you answer these in your own words?}
+
+\begin{enumerate}
+    \item What is panel data and how does it differ from cross-sectional data?
+    \item What is omitted variable bias and why does pooled OLS suffer from it?
+    \item What does a firm fixed effect absorb, and what can it \textit{not} absorb?
+    \item Why did the patent stock coefficient drop from 0.847 to 0.486 when firm FE were added?
+    \item What is the trade-off when adding more fixed effects to a model?
+    \item Why are OLS standard errors biased in panel data?
+    \item When should you cluster by firm vs.\ by time vs.\ two-way?
+    \item In \texttt{pyfixest}, what does the \texttt{|} in the formula \texttt{y \textasciitilde{} x | firm + year} do?
+\end{enumerate}
+
+\end{frame}
+
+
+\end{document}

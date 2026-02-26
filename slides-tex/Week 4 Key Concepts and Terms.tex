@@ -1,0 +1,393 @@
+\documentclass[9pt,aspectratio=169]{beamer}
+\usetheme{StAndrews}
+
+\coursename{FI5699 Dissertation Module}
+
+\title{\LARGE \textnormal{Week 4: \\
+Key Concepts and Terms}}
+\hypersetup{pdftitle={FI5699 Week 4 -- Key Concepts and Terms}}
+
+\newcolumntype{R}{>{\raggedright\arraybackslash}p{8cm}}
+
+\begin{document}
+
+% ============================================================================
+% TITLE PAGE
+% ============================================================================
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+
+
+\begin{frame}{How to Use This Study Aid}
+
+This deck collects the \alert{key concepts and terms} from Week 4: Working with Data in Python.
+
+\medskip
+
+\textbf{For each term you should be able to:}
+\begin{itemize}
+    \item Define it in your own words
+    \item Give an example or illustration
+    \item Explain why it matters for your dissertation workflow
+\end{itemize}
+
+\medskip
+
+Use these slides as prompts --- prepare your own definitions, answers and materials.
+
+\medskip
+
+\alert{Note:} This is a study aid only. It does not attempt to be comprehensive and should not be relied upon as sufficient preparation for assessment purposes.
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 1: POLARS DATA STRUCTURES
+% ============================================================================
+\section{Polars Data Structures}
+
+\begin{frame}{DataFrames and Series}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{DataFrame} & What is a DataFrame? How is it like a spreadsheet with typed columns? \\[0.8em]
+\alert{Series} & What is a Series and how does it relate to a DataFrame column? \\[0.8em]
+\alert{Data type} & What are the common Polars types (\texttt{Int64}, \texttt{Float64}, \texttt{String}, \texttt{Boolean}, \texttt{Date})? Why does every column have one? \\[0.8em]
+\alert{\texttt{null}} & What does \texttt{null} mean in Polars? How is it different from zero or \texttt{NaN}? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+\begin{frame}{Inspecting Your Data}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{\texttt{.head(n)} / \texttt{.tail(n)}} & What do these show and why are they useful for large datasets? \\[0.8em]
+\alert{\texttt{.shape}} & What does the tuple \texttt{(rows, columns)} tell you? \\[0.8em]
+\alert{\texttt{.columns}} & What does this return and when would you use it? \\[0.8em]
+\alert{\texttt{.schema}} & How does this differ from \texttt{.columns}? \\[0.8em]
+\alert{\texttt{.describe()}} & What summary statistics does it produce? How is it like Excel's summary? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 2: READING AND WRITING DATA
+% ============================================================================
+\section{Reading and Writing Data}
+
+\begin{frame}{CSV and Excel I/O}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{\texttt{pl.read\_csv()}} & How do you load a CSV file into a DataFrame? What useful parameters does it have? \\[0.8em]
+\alert{\texttt{.write\_csv()}} & How do you save a DataFrame to a CSV file? \\[0.8em]
+\alert{\texttt{pl.read\_excel()}} & How do you read a specific sheet from an Excel file? \\[0.8em]
+\alert{\texttt{.write\_excel()}} & What extra dependency is needed to write Excel files? \\[0.8em]
+\alert{\texttt{try\_parse\_dates}} & Why is this parameter especially useful for financial data? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+\begin{frame}{Lazy Reading}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{\texttt{pl.scan\_csv()}} & How does it differ from \texttt{read\_csv}? What does it return? \\[0.8em]
+\alert{LazyFrame} & What is a LazyFrame and why does deferring execution make queries faster? \\[0.8em]
+\alert{\texttt{.collect()}} & What does calling \texttt{.collect()} on a LazyFrame do? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 3: EXPRESSIONS AND CONTEXTS
+% ============================================================================
+\section{Expressions and Contexts}
+
+\begin{frame}{The Core Idea}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{Expression} & What is an expression in Polars? Why is it a ``recipe'' that does nothing on its own? \\[0.8em]
+\alert{Context} & What is a context? Why does Polars separate \emph{what} to compute from \emph{where} to put it? \\[0.8em]
+\alert{\texttt{pl.col()}} & What does \texttt{pl.col("price")} refer to? How do you use it in expressions? \\[0.8em]
+\alert{\texttt{.alias()}} & What does \texttt{.alias("new\_name")} do and when do you need it? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+\begin{frame}{The Four Contexts}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{\texttt{select}} & What does it return? How is it like choosing which columns to display? \\[0.8em]
+\alert{\texttt{with\_columns}} & How does it differ from \texttt{select}? Why use it to add a computed column? \\[0.8em]
+\alert{\texttt{filter}} & What kind of expression does it take? How is it like Excel's AutoFilter? \\[0.8em]
+\alert{\texttt{group\_by} + \texttt{agg}} & What does grouping do? How is it like an Excel pivot table? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 4: WORKING WITH EXPRESSIONS
+% ============================================================================
+\section{Working with Expressions}
+
+\begin{frame}{Arithmetic, Comparisons, and Conditionals}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{Element-wise arithmetic} & What does \texttt{pl.col("price") * pl.col("shares")} compute? Why are no loops needed? \\[0.8em]
+\alert{Boolean column} & What does \texttt{pl.col("price") > 200} produce? How do you combine conditions with \texttt{\&} and \texttt{|}? \\[0.8em]
+\alert{\texttt{when} / \texttt{then} / \texttt{otherwise}} & How does this work like Excel's \texttt{IF()}? Can you chain multiple conditions? \\[0.8em]
+\alert{\texttt{.cast()}} & What does casting do? What happens when you cast a float to an integer? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+\begin{frame}{Expression Expansion and Naming}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{Expression expansion} & What does \texttt{pl.col("price", "shares").mean()} do? Why is it useful? \\[0.8em]
+\alert{\texttt{.name.prefix()} / \texttt{.name.suffix()}} & How do these help when applying the same operation to many columns? \\[0.8em]
+\alert{Keyword syntax} & What does \texttt{value = pl.col("price") * pl.col("shares")} mean inside \texttt{with\_columns}? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 5: WORKING WITH STOCK RETURNS
+% ============================================================================
+\section{Working with Stock Returns}
+
+\begin{frame}{Downloading and Understanding Prices}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{\texttt{tidyfinance}} & What does \texttt{tf.download\_data()} do and what columns does it return? \\[0.8em]
+\alert{Adjusted close} & Why must you use adjusted close (not raw close) when computing returns? What does it correct for? \\[0.8em]
+\alert{Stock split} & What is a stock split and how does it affect the raw closing price? \\[0.8em]
+\alert{Dividend adjustment} & How do dividends affect stock prices, and why does adjusted close account for them? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+\begin{frame}{Computing Returns}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{Daily return} & What is the formula $r_t = p_t / p_{t-1} - 1$? What does it measure? \\[0.8em]
+\alert{\texttt{.pct\_change()}} & What does this method compute? Why is the first row \texttt{null}? \\[0.8em]
+\alert{\texttt{.over("symbol")}} & What is a window function? Why is \texttt{.over()} needed when you have multiple stocks? \\[0.8em]
+\alert{Monthly returns} & How do you compound daily returns into monthly? What does $(1+r_1)(1+r_2)\cdots(1+r_n)-1$ mean? \\[0.8em]
+\alert{\texttt{.drop\_nulls()}} & When and why would you drop null values from your returns? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 6: COMBINING DATAFRAMES
+% ============================================================================
+\section{Combining DataFrames}
+
+\begin{frame}{Joins}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{Join} & What is a join? How is it like \texttt{VLOOKUP} for entire tables? \\[0.8em]
+\alert{Join key} & What is the shared column (e.g.\ \texttt{ticker}) that links two tables? \\[0.8em]
+\alert{Inner join} & Which rows survive? When would you use it? \\[0.8em]
+\alert{Left join} & Which rows survive? What happens when there is no match on the right? \\[0.8em]
+\alert{Anti join} & What does it return? Why is it useful for finding missing data? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+\begin{frame}{Concatenation}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{\texttt{pl.concat()}} & What does concatenation do? When would you use it instead of a join? \\[0.8em]
+\alert{Vertical concat} & What does \texttt{how="vertical"} mean? What must be true about the columns? \\[0.8em]
+\alert{Horizontal concat} & What does \texttt{how="horizontal"} mean? What must be true about the rows? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 7: RESHAPING DATA
+% ============================================================================
+\section{Reshaping Data}
+
+\begin{frame}{Pivot and Unpivot}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{Wide format} & What does a wide table look like? When is it useful (e.g.\ summary tables)? \\[0.8em]
+\alert{Long format} & What does a long (``tidy'') table look like? Why is it better for plotting and \texttt{group\_by}? \\[0.8em]
+\alert{\texttt{.pivot()}} & What does pivoting do (long $\to$ wide)? What are the \texttt{index}, \texttt{on}, and \texttt{values} parameters? \\[0.8em]
+\alert{\texttt{.unpivot()}} & What does unpivoting do (wide $\to$ long)? What new columns does it create? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 8: VISUALISING DATA
+% ============================================================================
+\section{Visualising Data}
+
+\begin{frame}{The Grammar of Graphics}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{\texttt{plotnine}} & What is plotnine? Why do we convert to pandas with \texttt{.to\_pandas()} before plotting? \\[0.8em]
+\alert{Grammar of Graphics} & What are the layers of a plot (data, aesthetics, geometry, theme)? \\[0.8em]
+\alert{\texttt{ggplot()} + \texttt{aes()}} & What does \texttt{aes()} do? How do you map columns to axes and colour? \\[0.8em]
+\alert{\texttt{geom\_*()} functions} & What do \texttt{geom\_line()}, \texttt{geom\_col()}, \texttt{geom\_histogram()}, and \texttt{geom\_point()} each produce? \\[0.8em]
+\alert{\texttt{labs()} + \texttt{theme\_*()}} & How do you add titles, axis labels, and visual polish to a plot? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+\begin{frame}{Key Financial Visualisations}
+
+\begin{tabular}{@{}lR@{}}
+\toprule
+\textbf{Term} & \textbf{What to know} \\
+\midrule
+\alert{Price chart} & How do you plot adjusted close over time using \texttt{geom\_line()}? \\[0.8em]
+\alert{Return histogram} & What does a histogram of daily returns show? What are ``fat tails''? \\[0.8em]
+\alert{Cumulative returns} & What does \texttt{.cum\_prod()} compute? How do you plot the growth of \$1? \\[0.8em]
+\alert{\texttt{color="symbol"}} & How does mapping colour to a grouping variable show multiple stocks on one chart? \\
+\bottomrule
+\end{tabular}
+
+\end{frame}
+
+
+% ============================================================================
+% SECTION 9: SUMMARY
+% ============================================================================
+\section{Summary Checklist}
+
+\begin{frame}{Week 4 --- Key Terms Checklist}
+
+\textbf{Can you define and give an example for each?}
+
+\medskip
+
+\begin{columns}[T]
+\begin{column}{0.33\textwidth}
+\begin{itemize}
+    \item DataFrame / Series
+    \item Data types (\texttt{Int64}, \texttt{Float64}, \texttt{String})
+    \item \texttt{null}
+    \item \texttt{.describe()}
+    \item \texttt{read\_csv} / \texttt{write\_csv}
+    \item \texttt{scan\_csv} / LazyFrame
+\end{itemize}
+\end{column}
+\begin{column}{0.33\textwidth}
+\begin{itemize}
+    \item Expression / context
+    \item \texttt{select} / \texttt{with\_columns}
+    \item \texttt{filter} / \texttt{group\_by}
+    \item \texttt{when} / \texttt{then} / \texttt{otherwise}
+    \item \texttt{.cast()}
+    \item \texttt{.alias()} / \texttt{.name.prefix()}
+\end{itemize}
+\end{column}
+\begin{column}{0.33\textwidth}
+\begin{itemize}
+    \item Adjusted close
+    \item \texttt{.pct\_change()} / \texttt{.over()}
+    \item Inner / left / anti join
+    \item \texttt{pl.concat()}
+    \item \texttt{.pivot()} / \texttt{.unpivot()}
+    \item \texttt{plotnine} / Grammar of Graphics
+\end{itemize}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+
+\begin{frame}{Week 4 --- Key Questions}
+
+\textbf{Can you answer these in your own words?}
+
+\begin{enumerate}
+    \item What is a DataFrame and how does it differ from a Python list or dictionary?
+    \item What is the difference between \texttt{read\_csv} and \texttt{scan\_csv}?
+    \item What is the difference between \texttt{select} and \texttt{with\_columns}?
+    \item Why do we use adjusted close instead of raw close when computing returns?
+    \item What does \texttt{.pct\_change().over("symbol")} do, and why is \texttt{.over()} needed?
+    \item When would you use a left join vs an inner join?
+    \item When should data be in long format vs wide format?
+    \item In \texttt{plotnine}, what do \texttt{aes()} and \texttt{geom\_line()} each do?
+\end{enumerate}
+
+\end{frame}
+
+
+\end{document}
