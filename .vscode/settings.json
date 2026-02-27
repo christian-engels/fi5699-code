@@ -15,5 +15,70 @@
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter",
     "editor.formatOnSave": true
-  }
+  },
+  "latex-workshop.latex.autoClean.run": "onSucceeded",
+  "latex-workshop.latex.tools": [
+    {
+      "name": "xelatex",
+      "command": "xelatex",
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "%DOC%"
+      ]
+    },
+    {
+      "name": "pdflatex",
+      "command": "pdflatex",
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "%DOC%"
+      ]
+    }
+  ],
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "xelatex x2",
+      "tools": ["xelatex", "xelatex"]
+    },
+    {
+      "name": "xelatex",
+      "tools": ["xelatex"]
+    },
+    {
+      "name": "pdflatex",
+      "tools": ["pdflatex"]
+    }
+  ],
+  "latex-workshop.latex.clean.method": "glob",
+  "latex-workshop.latex.clean.fileTypes": [
+    "*.aux",
+    "*.bbl",
+    "*.blg",
+    "*.idx",
+    "*.ind",
+    "*.lof",
+    "*.lot",
+    "*.out",
+    "*.toc",
+    "*.acn",
+    "*.acr",
+    "*.alg",
+    "*.glg",
+    "*.glo",
+    "*.gls",
+    "*.fls",
+    "*.log",
+    "*.fdb_latexmk",
+    "*.snm",
+    "*.nav",
+    "*.vrb",
+    "*.run.xml",
+    "*.bcf",
+    "*.xdv",
+    "*.thm"
+  ]
 }
